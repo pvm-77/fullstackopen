@@ -9,7 +9,6 @@ morgan.token('body', (req, res) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :response-time ms - :res[content-length] :body - :req[content-length]'));
 app.use(cors())
 app.use(express.static('build'))
-
 // fetching a singlec resource
 app.get('/api/persons/:id', (req, res) => {
     Person.findById(req.params.id).then(person => {
@@ -53,7 +52,6 @@ const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
 }
 app.use(unknownEndpoint)
-
 const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`server is running on port ${PORT}`)
