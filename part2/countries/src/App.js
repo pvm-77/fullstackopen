@@ -1,7 +1,10 @@
-
 import { useState, useEffect } from 'react'
 import countryAPI from './api/country'
 const MyWeather = ({ country }) => {
+  const getTemprature = (weather) => {
+   
+    return weather[0].main.temp
+  }
 
 
   const [allWeatherCondition, setAllWeatherCondition] = useState([])
@@ -12,11 +15,11 @@ const MyWeather = ({ country }) => {
       console.log('check api key');
     })
   }, [country])
-  if (allWeatherCondition.length === 0) return  
+  if (allWeatherCondition.length === 0) return
   return (
     <>
       <p>weather in {country}</p>
-      <p>temperature  </p>
+      <p>temperature {getTemprature(allWeatherCondition)} </p>
       <img src={`http://openweathermap.org/img/wn/${allWeatherCondition[0].weather[0].icon}@2x.png`} alt='img' />
       <p>wind {allWeatherCondition[0].wind.speed} m/s</p>
     </>
@@ -50,7 +53,7 @@ const MyCountry = ({ filteredCountries, setFilteredCountries }) => {
       <div>
         {filteredCountries.map(country =>
           <div>
-            <p key={country.tId}>
+            <p key={country.latlng[0]}>
               {country.name.common}
               <button
                 onClick={() => setFilteredCountries([country])}>show </button>
@@ -78,7 +81,6 @@ function App() {
   const [searchText, setSearchText] = useState('')
   // set countries state here [getting array of objects]
   const [countries, setCountries] = useState([]);
-  console.log('line 82', countries);
   const [filteredCountries, setFilteredCountries] = useState([])
 
   // handler for search input 
