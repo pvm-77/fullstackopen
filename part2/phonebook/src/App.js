@@ -53,7 +53,7 @@ const App = () => {
         .then(response => {
           setPersons(persons.map(person => person.id !== alreadyExistPersonDetail[0].id ? person : response.data))
         }).catch(error => {
-          setErrorMessage(`Information  of ${newName} has been removed from server`)
+          setErrorMessage(error.response.data.error)
           setTimeout(() => {
             setErrorMessage(null)
           }, 2000)
@@ -70,7 +70,14 @@ const App = () => {
         // empty input field
         setNewName('')
         setNewNumber('')
-      }).catch(e => console.log('something went wrong'))
+      }).catch(error => {
+        // console.log(error.response.data.error)
+        setErrorMessage(error.response.data.error)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+
+      })
   }
 
   // on change handler

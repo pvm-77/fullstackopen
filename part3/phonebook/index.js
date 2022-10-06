@@ -37,7 +37,6 @@ app.post('/api/persons', (req, res, next) => {
   person.save().then(savedPerson => {
     res.status(200).json(savedPerson)
   }).catch(error => next(error)
-
   )
 })
 // get all persons
@@ -50,7 +49,6 @@ app.get('/info', (req, res) => {
   Person.find({}).count().then(count => {
     res.send(`<div>phonebook has info of ${count} people <p>${new Date()}</p></div>`)
   })
-
 })
 // delete by id
 app.delete('/api/persons/:id', (req, res, next) => {
@@ -63,7 +61,6 @@ app.put('/api/persons/:id', (req, res, next) => {
     name: req.body.name,
     number: req.body.number
   }
-  console.log(person)
   Person.findByIdAndUpdate(req.params.id, person, { new: true, runValidators: true, context: 'query' })
     .then(updatedPerson => {
       res.status(204).json(updatedPerson)
@@ -75,8 +72,6 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 app.use(unknownEndpoint)
-
-
 const errorHandler = (error, req, res, next) => {
   console.error(error.message)
   if (error.name === 'CastError') {
