@@ -1,0 +1,10 @@
+POST http://localhost:3001/api/blogs
+Content-type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNhcmZhcmF6Mjk3IiwiaWQiOiI2MzJjMGY2ZWUzNTcwNzkxNzVhZTczZmQiLCJpYXQiOjE2NjM4NDcwNjJ9.oTs6F94WtoeTO0RprOILgJ5C--iQ5OzbVsHcbre6jhE
+
+{  
+    "author":"Sarfaraz Hussain",
+    "likes":12,
+    "title":"testing token extractor function",
+    "url":"testtokenextractorbro.html"
+}
