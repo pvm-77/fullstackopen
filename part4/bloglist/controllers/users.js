@@ -11,6 +11,7 @@ const isLength = (field) => {
 }
 userRouter.post('/', async (request, response) => {
     const { username, name, password } = request.body
+    
     const userAlreadyExist = await User.findOne({ username })
     if (userAlreadyExist) return response.status(400).json({
         error: 'username must be unique'

@@ -1,7 +1,6 @@
 const dummy = (blogs) => {
-    return 1
+    return blogs.length
 }
-
 const totalLikes = (blogposts) => {
     // user define reducer function for total count
     const totalLikesCountReducer = (totalLikes, blog) => {
@@ -11,7 +10,6 @@ const totalLikes = (blogposts) => {
     return blogposts.length === 0 ? 0 : blogposts.reduce(totalLikesCountReducer, 0)
 
 }
-
 const favoriteBlog = (blogposts) => {
     // return blog having most number of count
     const mostLiked = Math.max(...blogposts.map(blog => blog.likes))

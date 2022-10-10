@@ -27,12 +27,6 @@ loginRouter.post('/', async (request, response) => {
         name: isUserAlreadyExist.name
 
     })
-
-
-
-
-
-
 })
 
 

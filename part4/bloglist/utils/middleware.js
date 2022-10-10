@@ -43,7 +43,6 @@ const tokenExtractor = async (request, response, next) => {
     if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
         // return authorization.substring(7)
         request.token = authorization.substring(7)
-        console.log('request token if correct', request.token);
     }
     else {
         request.token = null
@@ -58,15 +57,11 @@ const userExtractor = async (request, response, next) => {
     const decodedToken = jwt.verify(token, config.SECRET)
     // find user from database
     const user = await User.findById(decodedToken.id)
-    console.log(user);
+    // chop off user fields
+    
     // add user property to request object
     request.user = user
     next()
-
-
-
-
-
 
 }
 
