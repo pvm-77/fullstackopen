@@ -3,33 +3,33 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 const config = require('../utils/config')
-const middleware=require('../utils/middleware')
+const middleware = require('../utils/middleware')
 
 
-blogRouter.post('/',middleware.userExtractor, async (request, response) => {
+blogRouter.post('/', async (request, response) => {
     const body = request.body
-    const user= request.user
-
+    
     const decodedToken = jwt.verify(request.token, config.SECRET)
     if (!decodedToken.id) {
         return response.status(401).json({ error: 'token missing or invalid' })
 
     }
+
     const fields = Object.keys(body)
     if (fields.length === 2) {
         const allowedFields = ['url', 'title'];
         const isValidOperation = fields.every(field => allowedFields.includes(field))
-        console.log(isValidOperation);
         if (!isValidOperation) {
             return response.status(400).json({ error: 'field are missing' })
         }
     }
+    const user = await User.findById(decodedToken.id)
     const blog = new Blog({
         title: body.title,
         author: body.author,
         likes: body.likes,
         url: body.url,
-        user: user._id
+        user: user.id
     })
     const savedBlog = await blog.save()
     user.blogs = user.blogs.concat(savedBlog._id)
@@ -39,19 +39,16 @@ blogRouter.post('/',middleware.userExtractor, async (request, response) => {
 })
 
 //------------------TODO: delete a blog only by who created it -------------
-blogRouter.delete('/:id',middleware.userExtractor, async (request, response) => {
-    const user = request.user
-    const userid=user._id;
-    console.log('user in delete', user)
+blogRouter.delete('/:id', async (request, response) => {
     const decodedToken = jwt.verify(request.token, config.SECRET)
     if (!decodedToken.id) {
         return response.status(401).json({ error: 'token missing or invalid' })
     }
     const blog = await Blog.findById(request.params.id)
-    console.log('blog user',blog.user.toString());
-    console.log('decoded token id',decodedToken.id.toString());
 
-    if (blog.user.toString() === userid.toString()) {
+    console.log('blog user', blog.user.toString());
+    console.log('decoded token id', decodedToken.id.toString());
+    if (blog.user.toString() === decodedToken.id.toString()) {
         await Blog.findByIdAndRemove(request.params.id)
         response.status(204).end()
     }

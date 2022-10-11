@@ -1,10 +1,11 @@
 POST http://localhost:3001/api/blogs
 Content-type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNhcmZhcmF6Mjk3IiwiaWQiOiI2MzJjMGY2ZWUzNTcwNzkxNzVhZTczZmQiLCJpYXQiOjE2NjUzOTcyMDd9.IYfspg8FxsU3RwyrYjC5mcjY2aHPuaAO3JFcK7H1ZDQ
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZhcmF6Mjk3IiwiaWQiOiI2MzQ1MTg4ZmRmYmRlNjkzZGU5MjM2ZTUiLCJpYXQiOjE2NjU0NzMwNTd9.UYWpdP_3Oio4gDilQLVVO40frYhyfHQT5VN1IH8whgI
 
 {  
-    "author":"Sarfaraz Hussain",
+    "author":"faraz Hussain",
     "likes":1,
-    "title":"testing6 user extractor middleware",
+    "title":"testing12user extractor middleware",
     "url":"samplecodemodif token.html"
 }
+

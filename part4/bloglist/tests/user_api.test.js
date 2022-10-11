@@ -5,7 +5,7 @@ const app = require('../app')
 const api = supertest(app)
 const bcrypt = require('bcrypt');
 const User = require('../models/user')
-
+let token=''
 beforeEach(async () => {
     await User.deleteMany({})
     const passwordHash = await bcrypt.hash('somepassword', 10)
@@ -15,6 +15,9 @@ beforeEach(async () => {
         name: 'Sarfaraz Hussain'
     })
     await user.save()
+
+  
+   
 })
 describe('when there is initially one user in DB', () => {
     test('creation succeeds with a fresh username', async () => {
