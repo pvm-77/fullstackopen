@@ -1,0 +1,49 @@
+
+@baseUrl=http://localhost:3001/api
+
+# @name login
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "username":"sarfaraz297",
+    "password":"somepassword"
+}
+
+###
+
+@authToken={{login.response.body.token}}
+
+###
+
+GET {{baseUrl}}/blogs
+
+###
+
+POST http://localhost:3001/api/blogs
+Content-type: application/json
+Authorization: bearer {{authToken}}
+
+{  
+    "author":"faraz Hussain",
+    "likes":1,
+    "title":"testing12user extractor middleware",
+    "url":"samplecodemodif token.html"
+}
+
+###
+
+DELETE  http://localhost:3001/api/blogs/6343f60cbd57efd5b1e26466
+Authorization: bearer {{authToken}}
+
+###
+
+PUT http://localhost:3001/api/blogs/6329b162352c2d47dd462816
+content-type: application/json
+
+{
+    "author":"don",
+    "likes":9,
+    "url":"gfjkndfj",
+    "title":"some change"
+}
