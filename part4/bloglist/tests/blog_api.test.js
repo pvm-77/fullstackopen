@@ -6,18 +6,71 @@ const api = supertest(app)
 const Blog = require('../models/blog')
 beforeEach(async () => {
     await Blog.deleteMany({})
-
+    // add blogs along with user
     await Blog.insertMany(helper.initialBlogs)
 })
 
+
+
+
+
+describe('deletion of a blog', () => {
+    test('succeeds with status code 204 if id is valid', async () => {
+        const result = await api.post('/api/login').send({ username: 'sarfaraz297', password: 'somepassword' })
+        // console.log(result);
+        const token = result.body.token
+        console.log('token is ', token);
+        const blogsAtStart = await helper.blogsInDb()
+        const blogTodelete = blogsAtStart[0]
+        console.log('blog id to delete', blogTodelete.id)
+        // call api
+        await api
+            .delete(`/api/blogs/${blogTodelete.id}`)
+            .set('Authorization', `Bearer ${token}`)
+            .expect(204)
+        // check length
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+        // check jo author delete hua vo list me to nahi a raha 
+        const authors = blogsAtEnd.map(blog => blog.author)
+        expect(authors).not.toContain(blogTodelete.author)
+
+    })
+
+    test('fails with status code 404 if id is not valid ', async () => {
+        const result = await api.post('/api/login').send({ username: 'sarfaraz297', password: 'somepassword' })
+        // console.log(result);
+        const token = result.body.token
+        console.log('token is ', token);
+        const blogsAtStart = await helper.blogsInDb()
+        const blogTodelete = blogsAtStart[0]
+        console.log('blog id to delete', blogTodelete.id)
+        // call api
+        await api
+            .delete(`/api/blogs/${blogTodelete.id}`)
+            .set('Authorization', `Bearer ${token}`)
+            .expect(404)
+        // check length
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+        // check jo author delete hua vo list me to nahi a raha 
+        const authors = blogsAtEnd.map(blog => blog.author)
+        expect(authors).not.toContain(blogTodelete.author)
+    })
+
+})
+
 describe('when there is some blogs saved initially', () => {
+    // completed
     test('blogs are returned as json', async () => {
         await api
             .get('/api/blogs')
             .expect(200)
             .expect('Content-Type', /application\/json/)
-    }, 10000
-    )
+    }, 10000)
+
+    // completed
+
     test('all blogs are returned', async () => {
         const response = await api.get('/api/blogs')
         expect(response.body).toHaveLength(helper.initialBlogs.length)
@@ -25,11 +78,17 @@ describe('when there is some blogs saved initially', () => {
 
     test('a specific blog within the returned bloglist', async () => {
         const response = await api.get('/api/blogs')
+        console.log(response.body);
         const authors = response.body.map(blog => blog.author)
         expect(authors).toContain('Robert C. Martin')
 
     }, 10000)
+    // exercise 4.9
+    test(' unique identifier property of the blog posts is named id,', async () => {
+        const response = await api.get('/api/blogs')
+        expect(response.body[0].id).toBeDefined()
 
+    })
 })
 describe('viewing a specific blog', () => {
     test('succeeds with a valid id', async () => {
@@ -60,52 +119,22 @@ describe('viewing a specific blog', () => {
 
     })
 })
-
-
-
-
-describe('deletion of a blog', () => {
-    test('succeeds with status code 204 if id is valid', async () => {
-        const result = api.post('/api/login').send({ username: 'sarfaraz297', password: 'somepassword' })
-        // console.log(result);
-        const token = (await result).body.token
-        console.log('token is ', token);
-
-        const blogsAtStart = await helper.blogsInDb()
-        const blogTodelete = blogsAtStart[0]
-        console.log('blog id to delete', blogTodelete.id)
-        // call api
-        await api
-            .delete(`/api/blogs/${blogTodelete.id}`)
-            .set('Authorization', `Bearer ${token}`)
-            .expect(204)
-        // check length
-        const blogsAtEnd = await helper.blogsInDb()
-        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
-        // check jo author delete hua vo list me to nahi a raha 
-        const authors = blogsAtEnd.map(blog => blog.author)
-        expect(authors).not.toContain(blogTodelete.author)
-
-    })
-
-})
-
-
 describe('addition of a new blog', () => {
-    test('succeed with valid data', async () => {
-        const result = api.post('/api/login').send({ username: 'sarfaraz297', password: 'somepassword' })
-        // console.log(result);
-        const token = (await result).body.token
-        console.log('token is ', token);
 
-        // blog information to send to server
+    // exercise 4.10
+    test('succeed with valid data', async () => {
+        const result =
+            await api
+                .post('/api/login')
+                .send({ username: 'sarfaraz297', password: 'somepassword' })
+        const token = result.body.token
+
         const blogObject = {
             title: "some random thoughts",
-            author: "zmq",
+            author: "sfz",
             url: "http://www.u.arizona.edu/~rubinson/frzilink.html",
             likes: 18,
         }
-        // send data to server
         await api
             .post('/api/blogs')
             .set('Authorization', `Bearer ${token}`)
@@ -115,14 +144,16 @@ describe('addition of a new blog', () => {
         const blogsAtEnd = await helper.blogsInDb()
         expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
         const authors = blogsAtEnd.map(blog => blog.author)
-        expect(authors).toContain('zmq')
+        expect(authors).toContain('sfz')
     })
 
-    test('fails with status code 400 if data invalid', async () => {
-        const result = api.post('/api/login').send({ username: 'sarfaraz297', password: 'somepassword' })
-        // console.log(result);
-        const token = (await result).body.token
-        console.log('token is ', token);
+    test('fails with status code 400 if if title or url properties are missing from the request data', async () => {
+        const result = await
+            api
+                .post('/api/login')
+                .send({ username: 'sarfaraz297', password: 'somepassword' })
+        token = await result.body.token
+
         const newObject = {
             author: 'fake author', likes: 3
         }
@@ -151,6 +182,32 @@ describe('addition of a new blog', () => {
             .expect(401)
 
     }, 10000)
+    test('if the likes property is missing', async () => {
+        const result =
+            await api
+                .post('/api/login')
+                .send({ username: 'sarfaraz297', password: 'somepassword' })
+        const token = result.body.token
+
+        const blogObject = {
+            title: "some random thoughts",
+            author: "sfz",
+            url: "http://www.u.arizona.edu/~rubinson/frzilink.html",
+
+        }
+        await api
+            .post('/api/blogs')
+            .set('Authorization', `Bearer ${token}`)
+            .send(blogObject)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+        const authors = blogsAtEnd.map(blog => blog.author)
+        expect(authors).toContain('sfz')
+    })
+
+
 
 })
 describe('update of a blog', () => {
@@ -166,6 +223,7 @@ describe('update of a blog', () => {
         console.log(resultBlog.body)
     })
 })
+
 afterAll(() => {
     mongoose.connection.close()
 })

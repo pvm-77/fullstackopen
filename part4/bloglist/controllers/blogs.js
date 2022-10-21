@@ -52,6 +52,9 @@ blogRouter.delete('/:id', async (request, response) => {
         await Blog.findByIdAndRemove(request.params.id)
         response.status(204).end()
     }
+    else{
+        response.status(404).json({error:"cant delete"})
+    }
 })
 
 // ------------- TODO: get all resource --------------
@@ -73,11 +76,6 @@ blogRouter.get('/:id', async (request, response) => {
 })
 
 // update a blog post 
-
-
-
-
-
 
 blogRouter.put('/:id', async (request, response) => {
     const body = request.body

@@ -1,5 +1,5 @@
 const dummy = (blogs) => {
-    return blogs.length
+    return 1
 }
 const totalLikes = (blogposts) => {
     // user define reducer function for total count
@@ -35,7 +35,7 @@ const mostBlogs = (blogs) => {
     // initial blogger
     const blogger = {
         author: '',
-        likes: 0
+        blogs: 0
     }
     for (let index = 0; index < blogs.length; index++) {
         let counter = frequencyCounter(blogs, blogs[index].author)
@@ -47,11 +47,38 @@ const mostBlogs = (blogs) => {
         }
     }
     console.log(`author:${authorNameWithMaxblog} blogs:${maxCounter}`);
+    blogger.author = authorNameWithMaxblog
+    blogger.blogs = maxCounter
+    return blogger
     // find the most frequently repeated author name
 
 }
 
 const mostLikes = (blogs) => {
+    const maxLikes = {
+    }
+    const mostLikedAuthor = {
+        author: '',
+        likes: 0
+    }
+    for (let index = 0; index < blogs.length; index++) {
+        // if key exist in object 
+        if (maxLikes[blogs[index].author]) {
+            maxLikes[blogs[index].author] = maxLikes[blogs[index].author] + blogs[index].likes
+            if (maxLikes[blogs[index].author] >= mostLikedAuthor.likes) {
+                mostLikedAuthor.likes = maxLikes[blogs[index].author];
+                mostLikedAuthor.author = blogs[index].author;
+            }
+        } else {
+            // set key in variable object
+            maxLikes[blogs[index].author] = blogs[index].likes;
+
+        }
+    }
+    return mostLikedAuthor
+
+
+
 
 }
 
