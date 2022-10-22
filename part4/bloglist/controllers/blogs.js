@@ -8,7 +8,7 @@ const middleware = require('../utils/middleware')
 
 blogRouter.post('/', async (request, response) => {
     const body = request.body
-    
+
     const decodedToken = jwt.verify(request.token, config.SECRET)
     if (!decodedToken.id) {
         return response.status(401).json({ error: 'token missing or invalid' })
@@ -40,21 +40,25 @@ blogRouter.post('/', async (request, response) => {
 
 //------------------TODO: delete a blog only by who created it -------------
 blogRouter.delete('/:id', async (request, response) => {
-    const decodedToken = jwt.verify(request.token, config.SECRET)
-    if (!decodedToken.id) {
-        return response.status(401).json({ error: 'token missing or invalid' })
-    }
-    const blog = await Blog.findById(request.params.id)
+    // old code
+    // const decodedToken = jwt.verify(request.token, config.SECRET)
+    // if (!decodedToken.id) {
+    //     return response.status(401).json({ error: 'token missing or invalid' })
+    // }
+    // const blog = await Blog.findById(request.params.id)
 
-    console.log('blog user', blog.user.toString());
-    console.log('decoded token id', decodedToken.id.toString());
-    if (blog.user.toString() === decodedToken.id.toString()) {
-        await Blog.findByIdAndRemove(request.params.id)
-        response.status(204).end()
-    }
-    else{
-        response.status(404).json({error:"cant delete"})
-    }
+    // console.log('blog user', blog.user.toString());
+    // console.log('decoded token id', decodedToken.id.toString());
+    // if (blog.user.toString() === decodedToken.id.toString()) {
+    //     await Blog.findByIdAndRemove(request.params.id)
+    //     response.status(204).end()
+    // }
+    // else{
+    //     response.status(404).json({error:"cant delete"})
+    // }
+    await Blog.findByIdAndRemove(request.params.id)
+    response.status(204).end()
+    
 })
 
 // ------------- TODO: get all resource --------------

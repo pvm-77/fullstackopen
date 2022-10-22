@@ -10,23 +10,22 @@ beforeEach(async () => {
     await Blog.insertMany(helper.initialBlogs)
 })
 
-
-
-
-
 describe('deletion of a blog', () => {
     test('succeeds with status code 204 if id is valid', async () => {
-        const result = await api.post('/api/login').send({ username: 'sarfaraz297', password: 'somepassword' })
-        // console.log(result);
-        const token = result.body.token
-        console.log('token is ', token);
+        // const result = await api.post('/api/login').send({ username: 'sarfaraz297', password: 'somepassword' })
+        // // console.log(result);
+        // const token = result.body.token
+        // console.log('token is ', token);
+        // const blogsAtStart = await helper.blogsInDb()
+        // const blogTodelete = blogsAtStart[0]
+        // console.log('blog id to delete', blogTodelete.id)
+
+        // call api
         const blogsAtStart = await helper.blogsInDb()
         const blogTodelete = blogsAtStart[0]
-        console.log('blog id to delete', blogTodelete.id)
-        // call api
         await api
             .delete(`/api/blogs/${blogTodelete.id}`)
-            .set('Authorization', `Bearer ${token}`)
+            // .set('Authorization', `Bearer ${token}`)
             .expect(204)
         // check length
         const blogsAtEnd = await helper.blogsInDb()
@@ -38,9 +37,13 @@ describe('deletion of a blog', () => {
     })
 
     test('fails with status code 404 if id is not valid ', async () => {
-        const result = await api.post('/api/login').send({ username: 'sarfaraz297', password: 'somepassword' })
+        const result = await
+            api
+                .post('/api/login')
+                .send({ username: 'sarfaraz297', password: 'somepassword' })
         // console.log(result);
         const token = result.body.token
+
         console.log('token is ', token);
         const blogsAtStart = await helper.blogsInDb()
         const blogTodelete = blogsAtStart[0]

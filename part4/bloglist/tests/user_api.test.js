@@ -5,17 +5,18 @@ const app = require('../app')
 const api = supertest(app)
 const bcrypt = require('bcrypt');
 const User = require('../models/user')
-let token = ''
+
 beforeEach(async () => {
     await User.deleteMany({})
-    const passwordHash = await bcrypt.hash('somepassword', 10)
+
     const user = new User({
         username: 'sarfaraz297',
-        password: passwordHash,
+        password: await bcrypt.hash('somepassword', 10),
         name: 'Sarfaraz Hussain'
     })
     await user.save()
 })
+
 describe('when there is initially one user in DB', () => {
 
     test('creation succeeds with a fresh username', async () => {
@@ -26,7 +27,7 @@ describe('when there is initially one user in DB', () => {
             username: 'Mohib',
             name: 'mohib297',
             password: await bcrypt.hash('somepassword', 10),
-            blogs:[]
+            blogs: []
         }
         // api call now 
         api.post('/api/users')
@@ -34,7 +35,7 @@ describe('when there is initially one user in DB', () => {
             .expect(201)
             .expect('Content-Type', /application\/json/)
         const usersAtEnd = await helper.usersInDb()
-        console.log(`user at end `,usersAtEnd);
+        console.log(`user at end `, usersAtEnd);
 
         // expect(usersAtEnd).toHaveLength(userAtStart.length + 1)
         // const usernames = usersAtEnd.map(user => user.username)
@@ -60,8 +61,28 @@ describe('when there is initially one user in DB', () => {
         const usersAtEnd = await helper.usersInDb()
         expect(usersAtEnd).toEqual(usersAtStart)
     })
-
 });
+
+
+test('creating user fails', () => {
+    test(' if both username and password not given', async () => { })
+    test(' if username is not  unique', async () => {
+        // find users initially in db
+        // create user manually
+        // api call and expected status code be 400
+        // check if first expection['error message'] fullfill
+        // find users in db after api call
+        // check if second expectation['users count  in db before op and after op must equal'] fulfill
+        const userAtStart=helper.usersInDb()
+        const newUser={
+            
+        }
+
+
+
+    })
+    test(' if both username and password are not atleast 3 characters long', async () => { })
+})
 
 
 afterAll(() => {
