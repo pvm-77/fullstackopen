@@ -2,7 +2,17 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+// import bg from './trianglify-lowres.png'
+import loginLogo from './login.png'
+import Modal from './components/Modal'
+// import background from './background.png'
+import './app.css'
+
 const App = () => {
+  // modal handling start here
+  const [modal, setModal] = useState(false)
+  const Toggle = () => setModal(!modal)
+  // modal handling end here
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
@@ -62,17 +72,49 @@ const App = () => {
 
     }
   }
+  const mystyle = {
+    left: '50%',
+    top: "50%",
+    position: 'absolute',
+    transform: 'translate(-50%, -50%)',
+
+
+  }
+
   if (user === null) {
     return (
-      <div>
-        <h2>Log in to application</h2>
-        <form onSubmit={handleLogin}>
-          <input name='Username' id='username' 
-          value={username} onChange={(e) => setUsername(e.target.value)} type='text' placeholder='enter username here' />
-          <input name='Password' id='password' 
-          value={password} onChange={(e) => setPassword(e.target.value)} type='password' placeholder='enter password here' />
-          <button type='submit'>login</button>
-        </form>
+      <div >
+        <div className='login-card-container'>
+          {/* modal handling start here */}
+          {/* <button className='clickme' onClick={() => Toggle()}>Modal</button>
+        <Modal show={modal} close={Toggle} /> */}
+          {/* modal handling end here */}
+
+
+
+          <div className='login-card'>
+            <header className='login-card-header'>
+              <h2 className='login-card-title'>Log in to application</h2>
+              <img src={loginLogo} alt='logo' className='login-card-logo' />
+            </header>
+            <main className='login-card-content'>
+              <form onSubmit={handleLogin}>
+                <div>
+                  <input name='Username' id='username'
+                    value={username} onChange={(e) => setUsername(e.target.value)} type='text' placeholder='enter username here' />
+                </div>
+
+                <div>
+                  <input name='Password' id='password'
+                    value={password} onChange={(e) => setPassword(e.target.value)} type='password' placeholder='enter password here' />
+                </div>
+
+                <button type='submit'>login</button>
+              </form>
+            </main>
+            <footer className='login-card-footer'></footer>
+          </div>
+        </div>
       </div>
     )
   }
@@ -81,22 +123,44 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <p> {user.username} logged in  <button onClick={handleLogout}>logout</button></p>
-      <div>
-        <h1>create new</h1>
-        <form onSubmit={handleCreateNewBlogInfo}>
+      <div className='create-blog-container'>
+        <div className='create-blog' >
+          <header className='create-blog-header'>
+            <h2 className='create-blog-title'>create new</h2>
+            {/* <img src='' alt='' className='' /> */}
+          </header>
+          <main>
+            <form onSubmit={handleCreateNewBlogInfo}>
+              <div>
+                <input name='Title' id=''
+                  value={title}
+                  type='text'
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder='enter title here' />
+              </div>
+              <div>
+                <input name='Author' id=''
+                  value={author}
+                  type='text'
+                  onChange={(e) => setAuthor(e.target.value)}
+                  placeholder='enter author here' />
+              </div>
+              <div>
+                <input name='Url' id=''
+                  value={url}
+                  type='text'
 
-          <input name='Title' id='' 
-          value={title} 
-          onChange={(e) => setTitle(e.target.value)} placeholder='enter title here' />
-          <input name='Author' id='' 
-          value={author} 
-          onChange={(e) => setAuthor(e.target.value)} placeholder='enter author here' />
-          <input name='Url' id='' 
-          value={url} 
-          onChange={(e) => setUrl(e.target.value)} placeholder='enter url here' />
-          <button type='submit'>create</button>
-        </form>
+                  onChange={(e) => setUrl(e.target.value)}
+                  placeholder='enter url here' /></div>
+              <button type='submit'>create</button>
+            </form>
+          </main>
+        </div>
+
+
       </div>
+
+
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
