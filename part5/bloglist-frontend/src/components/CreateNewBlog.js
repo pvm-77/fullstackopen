@@ -37,7 +37,15 @@ const CreateNewBlog = ({ title, url, author, handleTitleChange, handleAuthorChan
                                 type='text'
                                 onChange={handleUrlChange}
                                 placeholder='enter url here' /></div>
-                        <button type='submit'>create</button>
+                        {/* <button type='submit'>create</button> */}
+                        <button class="button">
+                            <div class="button__content">
+                                <div class="button__icon">
+                                    {/* <img src={viewBlog} alt='view-blog'/> */}
+                                </div>
+                                <p class="button__text">create</p>
+                            </div>
+                        </button>
                     </form>
                 </main>
             </div>

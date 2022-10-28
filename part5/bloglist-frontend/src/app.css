@@ -67,21 +67,94 @@ input[type="password"] {
   /* remove default border */
   border-bottom: 1px solid #eee;
   /* // add only bottom border */
-  box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
-  border-radius:10px;
+  box-shadow: 0 0 15px 4px rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
   width: 100%;
   outline: none;
 }
 
-
 /* notification styles */
-.error{
+.error {
   border: 1px solid red;
   color: red;
   font: italic;
   text-align: center;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
-.success{
+.success {
   border: 1px solid green;
+}
+
+.button {
+  position: relative;
+  padding: 0;
+  width: 50px;
+  height: 50px;
+  /* border: 2px solid #888888; */
+  outline: none;
+  /* background-color: #f4f5f6; */
+  /* border-radius: 10px; */
+  border: none;
+  /* box-shadow: -3px -10px 17px #ffffff, -3px -5px 7px #ffffff,
+    -10px 0px 15px #ffffff, 3px 10px 12px rgba(0, 0, 0, 0.1); */
+  transition: 0.13s ease-in-out;
+  cursor: pointer;
+  background: transparent;
+}
+.button:active {
+  box-shadow: none;
+}
+.button:active .button__content {
+  box-shadow: none;
+}
+.button:active .button__content .button__text,
+.button:active .button__content .button__icon {
+  transform: translate3d(0px, 0px, 0px);
+}
+.button__content {
+  position: relative;
+  display: grid;
+  padding: 10px;
+  width: 50%;
+  height: 50%;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  box-shadow: inset 0px -4px 0px #bbb6b6, 0px -4px 0px #e2e6eb;
+  border-radius: 20px;
+  transition: 0.13s ease-in-out;
+  z-index: 1;
+}
+.button__icon {
+  position: relative;
+  display: flex;
+  transform: translate3d(0px, -2px, 0px);
+  grid-column: 4;
+  align-self: start;
+  justify-self: end;
+  width: 16px;
+  height: 16px;
+  transition: 0.13s ease-in-out;
+}
+.button__icon svg {
+  width: 16px;
+  height: 16px;
+  fill: #aaaaaa;
+}
+.button__text {
+  position: relative;
+  transform: translate3d(0px, -2px, 0px);
+  margin: 0;
+  align-self: end;
+  grid-column: 1/5;
+  grid-row: 2;
+  text-align: center;
+  font-size: 8px;
+  background-color: black;
+  color: transparent;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  transition: 0.13s ease-in-out;
 }

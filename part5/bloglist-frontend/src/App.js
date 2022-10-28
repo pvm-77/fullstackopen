@@ -28,8 +28,7 @@ const App = () => {
   // set error and success notification 
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
-
-
+  
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
