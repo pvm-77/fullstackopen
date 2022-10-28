@@ -1,18 +1,20 @@
 import { useState } from 'react'
+
 import viewBlog from './viewBlog.png'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlog }) => {
   const [isBlogDetailsOpen, setIsBlogDetailsOpen] = useState(false)
   const Toggle = () => {
     setIsBlogDetailsOpen(!isBlogDetailsOpen)
   }
-  // (
+  const handleLikePost = () => {
+    const updateBlogInfo = {
+      ...blog,
+      likes: blog.likes + 1
 
-  //   <div>
-  //     {blog.title} {blog.author}
-  //   </div>  
-  // )
-
+    }
+    updateBlog(updateBlogInfo)
+  }
 
   const blogStyle = {
 
@@ -40,12 +42,12 @@ const Blog = ({ blog }) => {
         </div>
         {/* <button>view</button> */}
 
-        <button class="button" onClick={Toggle}>
-          <div class="button__content">
-            <div class="button__icon">
+        <button className="button" onClick={Toggle}>
+          <div className="button__content">
+            <div className="button__icon">
               <img src={viewBlog} alt='view-blog' />
             </div>
-            <p class="button__text">view</p>
+            <p className="button__text">view</p>
           </div>
         </button>
       </div>
@@ -56,17 +58,17 @@ const Blog = ({ blog }) => {
         <div style={{ border: 'solid', borderWidth: 1 }}>
           <p>{blog.title} {blog.author}</p>
           <p>{blog.url}</p>
-          <p>like {blog.likes} <button >like</button></p>
+          <p>likes {blog.likes} <button onClick={handleLikePost}>like</button></p>
           <p>{blog.user.name}</p>
         </div>
         {/* <button>view</button> */}
 
-        <button class="button" onClick={Toggle}>
-          <div class="button__content">
-            <div class="button__icon">
+        <button className="button" onClick={Toggle}>
+          <div className="button__content">
+            <div className="button__icon">
               <img src={viewBlog} alt='view-blog' />
             </div>
-            <p class="button__text">hide</p>
+            <p className="button__text">hide</p>
           </div>
         </button>
       </div>

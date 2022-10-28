@@ -12,7 +12,16 @@ const create = async (newObject) => {
   const config = {
     headers: { Authorization: token },
   }
-  const request =  axios.post(baseUrl, newObject, config)
+  const request = axios.post(baseUrl, newObject, config)
+  return request.then(response => response.data)
+}
+const likePost = (updatedObject) => {
+  console.log(updatedObject.id)
+  const config = {
+    headers: { Authorization: token },
+  }
+  console.log(`${baseUrl}/${updatedObject.id}`);
+  const request = axios.post(`${baseUrl}/${updatedObject.id}`, updatedObject, config)
   return request.then(response => response.data)
 }
 const getAll = () => {
@@ -26,6 +35,7 @@ const getAll = () => {
 const blogService = {
   getAll,
   create,
+  likePost,
   setToken
 }
 export default blogService

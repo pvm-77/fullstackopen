@@ -5,7 +5,33 @@ const jwt = require('jsonwebtoken')
 const config = require('../utils/config')
 const middleware = require('../utils/middleware')
 
+// update a blog post 
 
+blogRouter.put('/:id', async (request, response) => {
+    try {
+        const body = request.body
+        // make sure only valid fields updated
+        const decodedToken = jwt.verify(request.token, config.SECRET)
+        if (!decodedToken.id) {
+            return response.status(401).json({ error: 'token missing or invalid' })
+
+        }
+        const user = await User.findById(decodedToken.id)
+        const updateBlogObject = {
+            user: user.id,
+            author: body.author,
+            url: body.url,
+            likes: body.likes,
+            title: body.title
+        }
+        const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, updateBlogObject, { new: true })
+        response.status(200).json(updatedBlog)
+    } catch (error) {
+        response.status(500).json({ error })
+    }
+
+}
+)
 blogRouter.post('/', async (request, response) => {
     const body = request.body
 
@@ -58,7 +84,7 @@ blogRouter.delete('/:id', async (request, response) => {
     // }
     await Blog.findByIdAndRemove(request.params.id)
     response.status(204).end()
-    
+
 })
 
 // ------------- TODO: get all resource --------------
@@ -79,20 +105,5 @@ blogRouter.get('/:id', async (request, response) => {
     }
 })
 
-// update a blog post 
 
-blogRouter.put('/:id', async (request, response) => {
-    const body = request.body
-    // make sure only valid fields updated
-    const updateBlogObject = {
-        user: body.user,
-        author: body.author,
-        url: body.url,
-        likes: body.likes,
-        title: body.title
-    }
-    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, updateBlogObject, { new: true })
-    response.status(200).json(updatedBlog)
-
-})
 module.exports = blogRouter

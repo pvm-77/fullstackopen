@@ -28,7 +28,7 @@ const App = () => {
   // set error and success notification 
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
-  
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
@@ -66,6 +66,19 @@ const App = () => {
     }
 
   }
+  const updateBlog=async(blogToBeUpdate)=>{
+    try {
+      console.log(blogToBeUpdate);
+      const updatedBlog=await  blogService.likePost(blogToBeUpdate)
+      // incalculate change
+
+      // notifcation if needed
+
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
   const handleCreateNewBlogInfo = async (e) => {
     e.preventDefault()
     try {
@@ -87,51 +100,11 @@ const App = () => {
 
     }
   }
-  const mystyle = {
-    left: '50%',
-    top: "50%",
-    position: 'absolute',
-    transform: 'translate(-50%, -50%)',
-
-
-  }
+ 
 
   if (user === null) {
     return (
       <div >
-
-        {/* modal handling start here */}
-        {/* <button className='clickme' onClick={() => Toggle()}>Modal</button>
-        <Modal show={modal} close={Toggle} /> */}
-        {/* modal handling end here */}
-        {/* <div className='login-card-container'>
-        
-          <div className='login-card'>
-            <header className='login-card-header'>
-              <h2 className='login-card-title'>Log in to application</h2>
-              <img src={loginLogo} alt='logo' className='login-card-logo' />
-
-            </header>
-            {successMessage && <Notification cls='success' msg={successMessage} />}
-            {errorMessage && <Notification cls='error' msg={errorMessage} />}
-            <main className='login-card-content'>
-              <form onSubmit={handleLogin}>
-                <div>
-                  <input name='Username' id='username'
-                    value={username} onChange={(e) => setUsername(e.target.value)} type='text' placeholder='enter username here' />
-                </div>
-
-                <div>
-                  <input name='Password' id='password'
-                    value={password} onChange={(e) => setPassword(e.target.value)} type='password' placeholder='enter password here' />
-                </div>
-
-                <button type='submit'>login</button>
-              </form>
-            </main>
-            <footer className='login-card-footer'></footer>
-          </div>
-        </div> */}
         <Togglable buttonLabel='login'>
           <LoginForm username={username} password={password}
             errorMessage={errorMessage} successMessage={successMessage}
@@ -142,10 +115,6 @@ const App = () => {
         </Togglable>
 
       </div>
-
-
-
-
     )
   }
 
@@ -154,44 +123,8 @@ const App = () => {
       <h2>blogs</h2>
       {successMessage && <Notification cls='success' msg={successMessage} />}
       {errorMessage && <Notification cls='error' msg={errorMessage} />}
-
       <p> {user.username} logged in  <button onClick={handleLogout}>logout</button></p>
       <Togglable buttonLabel='create new'>
-        {/* <div className='create-blog-container'>
-          <div className='create-blog' >
-            <header className='create-blog-header'>
-              <h2 className='create-blog-title'>create new</h2>
-              <img src='' alt='' className='' />
-            </header>
-            <main>
-              <form onSubmit={handleCreateNewBlogInfo}>
-                <div>
-                  <input name='Title' id=''
-                    value={title}
-                    type='text'
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder='enter title here' />
-                </div>
-                <div>
-                  <input name='Author' id=''
-                    value={author}
-                    type='text'
-                    onChange={(e) => setAuthor(e.target.value)}
-                    placeholder='enter author here' />
-                </div>
-                <div>
-                  <input name='Url' id=''
-                    value={url}
-                    type='text'
-
-                    onChange={(e) => setUrl(e.target.value)}
-                    placeholder='enter url here' /></div>
-                <button type='submit'>create</button>
-              </form>
-            </main>
-          </div>
-        </div> */}
-
         <CreateNewBlog
           handleAuthorChange={(e) => setAuthor(e.target.value)}
           handleTitleChange={(e) => setTitle(e.target.value)}
@@ -202,14 +135,10 @@ const App = () => {
           handleSubmit={handleCreateNewBlogInfo}
           successMessage={successMessage}
           errorMessage={errorMessage}
-
         />
       </Togglable>
-
-
-
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
       )}
     </div>
   )
