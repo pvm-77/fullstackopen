@@ -32,58 +32,70 @@ blogRouter.put('/:id', async (request, response) => {
 
 }
 )
-blogRouter.post('/', async (request, response) => {
+blogRouter.post('/',middleware.userExtractor, async (request, response) => {
     const body = request.body
+    
+    try {
 
-    const decodedToken = jwt.verify(request.token, config.SECRET)
-    if (!decodedToken.id) {
-        return response.status(401).json({ error: 'token missing or invalid' })
+        // extract token from request object 
+        const decodedToken = jwt.verify(request.token, config.SECRET)
+        if (!decodedToken.id) {
+            return response.status(401).json({ error: 'token missing or invalid' })
 
-    }
-
-    const fields = Object.keys(body)
-    if (fields.length === 2) {
-        const allowedFields = ['url', 'title'];
-        const isValidOperation = fields.every(field => allowedFields.includes(field))
-        if (!isValidOperation) {
-            return response.status(400).json({ error: 'field are missing' })
         }
+
+        const fields = Object.keys(body)
+        if (fields.length === 2) {
+            const allowedFields = ['url', 'title'];
+            const isValidOperation = fields.every(field => allowedFields.includes(field))
+            if (!isValidOperation) {
+                return response.status(400).json({ error: 'field are missing' })
+            }
+        }
+        // const user = await User.findById(decodedToken.id)
+        const user = request.user
+        const blog = new Blog({
+            title: body.title,
+            author: body.author,
+            likes: body.likes,
+            url: body.url,
+            user: user.id
+        })
+
+        const savedBlog = await blog.save()
+        console.log(savedBlog);
+
+        user.blogs = user.blogs.concat(savedBlog._id)
+        await user.save()
+        response.status(201).json(savedBlog)
+    } catch (error) {
+        response.status(500).json({ error })
     }
-    const user = await User.findById(decodedToken.id)
-    const blog = new Blog({
-        title: body.title,
-        author: body.author,
-        likes: body.likes,
-        url: body.url,
-        user: user.id
-    })
-    const savedBlog = await blog.save()
-    user.blogs = user.blogs.concat(savedBlog._id)
-    await user.save()
-    response.status(201).json(savedBlog)
 
 })
 
 //------------------TODO: delete a blog only by who created it -------------
-blogRouter.delete('/:id', async (request, response) => {
-    // old code
-    // const decodedToken = jwt.verify(request.token, config.SECRET)
-    // if (!decodedToken.id) {
-    //     return response.status(401).json({ error: 'token missing or invalid' })
-    // }
-    // const blog = await Blog.findById(request.params.id)
+blogRouter.delete('/:id',middleware.userExtractor, async (request, response) => {
 
-    // console.log('blog user', blog.user.toString());
-    // console.log('decoded token id', decodedToken.id.toString());
-    // if (blog.user.toString() === decodedToken.id.toString()) {
-    //     await Blog.findByIdAndRemove(request.params.id)
-    //     response.status(204).end()
-    // }
-    // else{
-    //     response.status(404).json({error:"cant delete"})
-    // }
-    await Blog.findByIdAndRemove(request.params.id)
-    response.status(204).end()
+    try {
+
+        const decodedToken = jwt.verify(request.token, config.SECRET)
+        if (!decodedToken.id) {
+            return response.status(401).json({ error: 'token missing or invalid' })
+        }
+        const user = request.user
+        const userid = user._id
+        // blog from db which is tobe deleted
+        const blog = await Blog.findById(request.params.id)
+        // compare user userid  from user and blog variables
+        if (!(blog.user.toString() === userid.toString())) {
+            return response.status(401).json({ error: 'you cant delete' })
+        }
+        await Blog.findByIdAndRemove(request.params.id)
+        response.status(204).end()
+    } catch (error) {
+        response.status(500).json({ error })
+    }
 
 })
 

@@ -52,22 +52,20 @@ const tokenExtractor = async (request, response, next) => {
 }
 const userExtractor = async (request, response, next) => {
     // get token from request object
-    const token = request.header('Authorization').replace('Bearer ', '')
-    console.log('token in userExtractor',token);
-    // decode token here
-    const decodedToken = jwt.verify(token, config.SECRET)
-    console.log(typeof(decodedToken))
-    console.log('decoded token',decodedToken)
-    console.log('decoded id',decodedToken.id);
-    console.log('decoded id type',typeof(decodedToken.id))
-    // find user from database
+    // console.log('extarct user toke from req', request.token);
+    const decodedToken = jwt.verify(request.token, config.SECRET)
+    if (!decodedToken.id) {
+        return response.status(401).json({ error: 'token missing or invalid' })
+    }
     const user = await User.findById(decodedToken.id)
-    console.log('user in tokenExtractor',user);
-    // chop off user fields
-    
-    // add user property to request object
-    request.user = user
+    // console.log('user in ext',user);
+    if (!user) {
+        request.user=null
+    }
+    request.user=user
+
     next()
+
 
 }
 

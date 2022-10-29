@@ -25,15 +25,13 @@ Content-type: application/json
 Authorization: bearer {{authToken}}
 
 {  
-    "author":"faraz Hussain",
-    "likes":1,
-    "title":"testing12user extractor middleware",
+    "author":"john deo",
     "url":"samplecodemodif token.html"
 }
 
 ###
 
-DELETE  http://localhost:3001/api/blogs/6343f60cbd57efd5b1e26466
+DELETE  http://localhost:3001/api/blogs/632c0c7a6a6ecab8c8c20405
 Authorization: bearer {{authToken}}
 
 ###

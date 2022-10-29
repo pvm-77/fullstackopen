@@ -8,6 +8,7 @@ loginRouter.post('/', async (request, response) => {
     const { username, password } = request.body
 
     const isUserAlreadyExist = await User.findOne({ username })
+    console.log('username',username);
     console.log('existing user info', isUserAlreadyExist)
     const isPasswordCorrect = isUserAlreadyExist === null ? false : await bcrypt.compare(password, isUserAlreadyExist.password)
     if (!(isUserAlreadyExist && isPasswordCorrect)) {

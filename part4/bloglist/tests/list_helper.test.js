@@ -88,7 +88,6 @@ describe('total likes', () => {
 })
 
 // exercise 4.5
-
 describe('favorite blog', () => {
     const listWithManyBlog = [
         {
