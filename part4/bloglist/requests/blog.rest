@@ -36,12 +36,13 @@ Authorization: bearer {{authToken}}
 
 ###
 
-PUT http://localhost:3001/api/blogs/6329b162352c2d47dd462816
-content-type: application/json
+PUT http://localhost:3001/api/blogs/632c104de357079175ae7405
+Content-type: application/json
+Authorization: bearer {{authToken}}
 
 {
-    "author":"don",
+    "author":"Sarfaraz Hussain",
     "likes":9,
-    "url":"gfjkndfj",
-    "title":"some change"
+    "url":"i amcodeigniter.com",
+    "title":"what is code igniter"
 }

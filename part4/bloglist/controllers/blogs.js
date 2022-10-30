@@ -7,7 +7,7 @@ const middleware = require('../utils/middleware')
 
 // update a blog post 
 
-blogRouter.put('/:id', async (request, response) => {
+blogRouter.put('/:id',middleware.userExtractor, async (request, response) => {
     try {
         const body = request.body
         // make sure only valid fields updated

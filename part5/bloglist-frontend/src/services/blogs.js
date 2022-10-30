@@ -16,12 +16,13 @@ const create = async (newObject) => {
   return request.then(response => response.data)
 }
 const likePost = (updatedObject) => {
-  console.log(updatedObject.id)
+  console.log('like post method in service ',updatedObject.id)
   const config = {
     headers: { Authorization: token },
   }
   console.log(`${baseUrl}/${updatedObject.id}`);
-  const request = axios.post(`${baseUrl}/${updatedObject.id}`, updatedObject, config)
+  const request = axios.put(`${baseUrl}/${updatedObject.id}`, updatedObject, config)
+  // console.log(`response data`,request.data);
   return request.then(response => response.data)
 }
 const getAll = () => {

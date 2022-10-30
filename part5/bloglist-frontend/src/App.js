@@ -66,11 +66,11 @@ const App = () => {
     }
 
   }
-  const updateBlog=async(blogToBeUpdate)=>{
+  const updateBlog = async (blogToBeUpdate) => {
     try {
-      console.log(blogToBeUpdate);
-      const updatedBlog=await  blogService.likePost(blogToBeUpdate)
+      const updatedBlog = await blogService.likePost(blogToBeUpdate)
       // incalculate change
+      setBlogs(blogs.map(blog=>blog.id===blogToBeUpdate.id?blogToBeUpdate:blog))
 
       // notifcation if needed
 
@@ -100,7 +100,7 @@ const App = () => {
 
     }
   }
- 
+
 
   if (user === null) {
     return (
