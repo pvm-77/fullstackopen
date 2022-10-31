@@ -1,4 +1,4 @@
-import React from 'react'
+import propTypes from 'prop-types'
 import Notification from './Notification'
 import loginLogo from '../login.png'
 const LoginForm = ({
@@ -41,4 +41,11 @@ const LoginForm = ({
     )
 }
 
+LoginForm.propTypes={
+    handleSubmit:propTypes.func.isRequired,
+    handlePasswordChange:propTypes.func.isRequired,
+    handleUsernameChange:propTypes.func.isRequired,
+    username:propTypes.string.isRequired,
+    password:propTypes.string.isRequired
+}
 export default LoginForm

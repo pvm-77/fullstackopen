@@ -1,22 +1,26 @@
 import { useState } from 'react'
-
 import viewBlog from './viewBlog.png'
 
-const Blog = ({ blog, updateBlog }) => {
-  console.log('blog before hit like', blog);
+const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
+  console.log('blog list',blog)
   const [isBlogDetailsOpen, setIsBlogDetailsOpen] = useState(false)
 
   const Toggle = () => {
     setIsBlogDetailsOpen(!isBlogDetailsOpen)
   }
+  const handleDeleteBlog = (blog) => {
+    let toDelete = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
+    if (toDelete) {
+      deleteBlog(blog.id)
+    }
 
+  }
   const handleLikePost = () => {
     const updateBlogInfo = {
       ...blog,
       likes: blog.likes + 1
 
     }
-    console.log('blog after hit like', updateBlogInfo);
     updateBlog(updateBlogInfo)
   }
 
@@ -38,9 +42,10 @@ const Blog = ({ blog, updateBlog }) => {
     border: 'solid', borderWidth: 1, marginBottom: 5,
     marginRight: 20
   }
+
   if (isBlogDetailsOpen === false) {
     return (
-      <div style={blogStyle}>
+      <div id='blog' style={blogStyle}>
         <div style={{ border: 'solid', borderWidth: 1 }}>
           {blog.title} {blog.author}
         </div>
@@ -58,15 +63,24 @@ const Blog = ({ blog, updateBlog }) => {
     )
   } else {
     return (
-      <div style={blogStyle}>
+      <div id='blog' style={blogStyle}>
         <div style={{ border: 'solid', borderWidth: 1 }}>
           <p>{blog.title} {blog.author}</p>
           <p>{blog.url}</p>
           <p>likes {blog.likes} <button onClick={handleLikePost}>like</button></p>
           <p>{blog.user.name}</p>
+          {blog.user.username === user.username ? <button className="button" onClick={() => handleDeleteBlog(blog)}>
+            <div className="button__content">
+              <div className="button__icon">
+                <img src={viewBlog} alt='view-blog' />
+              </div>
+              <p className="button__text">remove</p>
+            </div>
+          </button> : null}
+
+
         </div>
         {/* <button>view</button> */}
-
         <button className="button" onClick={Toggle}>
           <div className="button__content">
             <div className="button__icon">

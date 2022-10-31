@@ -6,7 +6,7 @@ POST {{baseUrl}}/login
 Content-Type: application/json
 
 {
-    "username":"sarfaraz297",
+    "username":"mohib297",
     "password":"somepassword"
 }
 
@@ -25,8 +25,10 @@ Content-type: application/json
 Authorization: bearer {{authToken}}
 
 {  
-    "author":"john deo",
-    "url":"samplecodemodif token.html"
+    "author":"Mohib Khan",
+    "url":"wanderingmohib.com",
+    "title":"nearest places to visit",
+    "likes":20
 }
 
 ###

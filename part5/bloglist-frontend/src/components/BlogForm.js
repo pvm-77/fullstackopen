@@ -1,8 +1,15 @@
 import React from 'react'
+import { useState } from 'react'
 import Notification from './Notification'
-const CreateNewBlog = ({ title, url, author, handleTitleChange, handleAuthorChange,
-  handleSubmit, handleUrlChange, errorMessage, successMessage
-}) => {
+const BlogForm = ({ createBlog,errorMessage,successMessage }) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
+  const addBlog=( e ) => {
+    e.preventDefault()
+    createBlog({ title,author,url })
+  }
   return (
     <div className='create-blog-container'>
       <div className='create-blog' >
@@ -13,13 +20,13 @@ const CreateNewBlog = ({ title, url, author, handleTitleChange, handleAuthorChan
         {errorMessage && <Notification cls='error' msg={errorMessage} />}
         {successMessage && <Notification cls='success' msg={successMessage} />}
         <main>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={addBlog}>
             <div>
               <input name='Title'
                 id='title'
                 value={title}
                 type='text'
-                onChange={handleTitleChange}
+                onChange={({ target }) => setTitle(target.value)}
                 placeholder='enter title here' />
             </div>
             <div>
@@ -27,7 +34,7 @@ const CreateNewBlog = ({ title, url, author, handleTitleChange, handleAuthorChan
                 id='author'
                 value={author}
                 type='text'
-                onChange={handleAuthorChange}
+                onChange={({ target }) => setAuthor(target.value)}
                 placeholder='enter author here' />
             </div>
             <div>
@@ -35,10 +42,10 @@ const CreateNewBlog = ({ title, url, author, handleTitleChange, handleAuthorChan
                 id='url'
                 value={url}
                 type='text'
-                onChange={handleUrlChange}
+                onChange={({ target }) => setUrl(target.value)}
                 placeholder='enter url here' /></div>
             {/* <button type='submit'>create</button> */}
-            <button className="button">
+            <button className="button" type='submit'>
               <div className="button__content">
                 <div className="button__icon">
                   {/* <img src={viewBlog} alt='view-blog'/> */}
@@ -53,4 +60,4 @@ const CreateNewBlog = ({ title, url, author, handleTitleChange, handleAuthorChan
   )
 }
 
-export default CreateNewBlog
+export default BlogForm

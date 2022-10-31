@@ -7,7 +7,7 @@ const setToken = (newToken) => {
 }
 
 const create = async (newObject) => {
-  console.log(`in service ${newObject}`);
+  console.log(`in service ${newObject}`)
   console.log(newObject)
   const config = {
     headers: { Authorization: token },
@@ -15,18 +15,27 @@ const create = async (newObject) => {
   const request = axios.post(baseUrl, newObject, config)
   return request.then(response => response.data)
 }
-const likePost = (updatedObject) => {
-  console.log('like post method in service ',updatedObject.id)
+const likePost = async (updatedObject) => {
+  console.log('like post method in service ', updatedObject.id)
   const config = {
     headers: { Authorization: token },
   }
-  console.log(`${baseUrl}/${updatedObject.id}`);
+  console.log(`${baseUrl}/${updatedObject.id}`)
   const request = axios.put(`${baseUrl}/${updatedObject.id}`, updatedObject, config)
   // console.log(`response data`,request.data);
-  return request.then(response => response.data)
+  const response = await request
+  return response.data
 }
 const getAll = () => {
   const request = axios.get(baseUrl)
+  return request.then(response => response.data)
+}
+
+const deleteBlog = (id) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+  const request = axios.delete(`${baseUrl}/${id}`, config)
   return request.then(response => response.data)
 }
 
@@ -37,6 +46,7 @@ const blogService = {
   getAll,
   create,
   likePost,
-  setToken
+  setToken,
+  deleteBlog
 }
 export default blogService
