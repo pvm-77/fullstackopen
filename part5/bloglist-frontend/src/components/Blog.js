@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import viewBlog from './viewBlog.png'
-
 const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
-  console.log('blog list',blog)
-  const [isBlogDetailsOpen, setIsBlogDetailsOpen] = useState(false)
+  console.log('blog', blog)
+  console.log('user', user)
 
+  const [isBlogDetailsOpen, setIsBlogDetailsOpen] = useState(false)
   const Toggle = () => {
     setIsBlogDetailsOpen(!isBlogDetailsOpen)
   }
+
   const handleDeleteBlog = (blog) => {
     let toDelete = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
     if (toDelete) {
@@ -23,7 +24,6 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
     }
     updateBlog(updateBlogInfo)
   }
-
   const blogStyle = {
 
     paddingTop: 10,
@@ -42,12 +42,13 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
     border: 'solid', borderWidth: 1, marginBottom: 5,
     marginRight: 20
   }
-
   if (isBlogDetailsOpen === false) {
     return (
-      <div id='blog' style={blogStyle}>
+      <div id='blog' className='blog' style={blogStyle}>
         <div style={{ border: 'solid', borderWidth: 1 }}>
-          {blog.title} {blog.author}
+          <div> {blog.title}</div>
+
+          <div>{blog.author}</div>
         </div>
         {/* <button>view</button> */}
 

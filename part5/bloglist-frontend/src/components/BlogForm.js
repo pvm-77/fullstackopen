@@ -1,15 +1,24 @@
 import React from 'react'
 import { useState } from 'react'
 import Notification from './Notification'
-const BlogForm = ({ createBlog,errorMessage,successMessage }) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
-
-  const addBlog=( e ) => {
+const BlogForm = ({ createBlog, errorMessage, successMessage }) => {
+  const [newTitle, setNewTitle] = useState('')
+  const [newAuthor, setNewAuthor] = useState('')
+  const [newUrl, setNewUrl] = useState('')
+  const addBlog = (e) => {
     e.preventDefault()
-    createBlog({ title,author,url })
+
+    createBlog({
+      title: newTitle,
+      author: newAuthor,
+      url: newUrl
+    })
+    setNewAuthor('')
+    setNewTitle('')
+    setNewUrl('')
   }
+
+
   return (
     <div className='create-blog-container'>
       <div className='create-blog' >
@@ -24,25 +33,25 @@ const BlogForm = ({ createBlog,errorMessage,successMessage }) => {
             <div>
               <input name='Title'
                 id='title'
-                value={title}
+                value={newTitle}
                 type='text'
-                onChange={({ target }) => setTitle(target.value)}
+                onChange={({ target }) => setNewTitle(target.value)}
                 placeholder='enter title here' />
             </div>
             <div>
               <input name='Author'
                 id='author'
-                value={author}
+                value={newAuthor}
                 type='text'
-                onChange={({ target }) => setAuthor(target.value)}
+                onChange={({ target }) => setNewAuthor(target.value)}
                 placeholder='enter author here' />
             </div>
             <div>
               <input name='Url'
                 id='url'
-                value={url}
+                value={newUrl}
                 type='text'
-                onChange={({ target }) => setUrl(target.value)}
+                onChange={({ target }) => setNewUrl(target.value)}
                 placeholder='enter url here' /></div>
             {/* <button type='submit'>create</button> */}
             <button className="button" type='submit'>

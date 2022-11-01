@@ -63,11 +63,11 @@ blogRouter.post('/',middleware.userExtractor, async (request, response) => {
         })
 
         const savedBlog = await blog.save()
-        console.log(savedBlog);
+        console.log(savedBlog.toJSON());
 
         user.blogs = user.blogs.concat(savedBlog._id)
         await user.save()
-        response.status(201).json(savedBlog)
+        response.status(201).json(savedBlog.toJSON())
     } catch (error) {
         response.status(500).json({ error })
     }
