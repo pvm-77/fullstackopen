@@ -1,12 +1,7 @@
 
 
-const calculateBmi = (height: number, weight: number): string => {
-    console.log('height', height);
-    console.log('weigth', weight);
-
-
-    let bmi: number = (weight / (height * height))*10000;
-    console.log(bmi);
+export const calculateBmi = (height: number, weight: number): string => {
+    let bmi: number = (weight / (height * height)) * 10000;
 
     if (bmi < 18.5) {
         return 'underweight'
@@ -20,4 +15,4 @@ const calculateBmi = (height: number, weight: number): string => {
     else
         return 'obesity';
 }
-console.log(calculateBmi(180, 74))
+
