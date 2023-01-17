@@ -1,4 +1,4 @@
-import { useState ,useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 export const useField = (type) => {
     const [value, setValue] = useState('')
@@ -16,16 +16,22 @@ export const useField = (type) => {
 
 
 export const useCountry = (name) => {
+    console.log('countryname', typeof (name));
     const [country, setCountry] = useState(null)
-
     useEffect(() => {
+
         axios.get(`https://restcountries.com/v3.1/name/${name}?fullText=true`)
-        .then(response=>{
-            console.log(response.data)
-            setCountry(response.data)
-        })
-        
-    },[name])
+            .then(response => {
+                setCountry(response.data)
+            })
+
+
+
+    }, [name])
 
     return country
+
+
+
+
 }

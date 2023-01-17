@@ -1,55 +1,29 @@
-import axios from 'axios'
-import { useState, useEffect } from 'react'
+// import axios from 'axios'
+import { useState } from 'react'
 import Country from './components/Country'
 import { useCountry, useField } from './hooks'
-const useGender = (name) => {
-  const [gender, setGender] = useState(null)
-  useEffect(() => {
-    axios.get(`https://api.genderize.io/?name=${name}`)
-      .then(response => {
-        setGender(response.data)
-      })
-  }, [name])
-
-  return gender
-}
 const App = () => {
-  const nameInput = useField('text')
-  const genderInput=useField('text')
+  const enterCountryName = useField('text')
+
   const [name, setName] = useState('')
   const country = useCountry(name)
 
-  const [genderName, setGenderName] = useState('')
-  const gender = useGender(genderName)
-  console.log(gender)
-
-  // const country=countryData[0]
-  const fetch = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-    setName(nameInput.value)
+    setName(enterCountryName.value)
   }
-  const fetchGender = (e) => {
-    e.preventDefault()
-    setGenderName(genderInput.value)
-  }
+  
 
   return (
     <div>
-      <form onSubmit={fetch}>
-        <input {...nameInput} />
+
+      <form onSubmit={handleSubmit}>
+        <input {...enterCountryName} />
         <button>find</button>
       </form>
 
-      <Country country={country} />
+     {name!=="" ?<Country country={country} />:null}
       <hr />
-
-      <div>
-        <form onSubmit={fetchGender}>
-          <input {...genderInput} />
-          <button>detect gender</button>
-        </form>
-        <div> name:{gender.name} prob: {gender.probability}</div>
-      </div>
     </div>
   )
 }

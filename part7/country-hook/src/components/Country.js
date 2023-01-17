@@ -1,13 +1,8 @@
 import React from 'react'
-
-const Country = ( {country} ) => {
-    
-
-// some code add here
+const Country = ({ country }) => {
     if (!country) {
         return <div>not found...</div>
     }
-
     return (
         <div>
             <h3>{country[0].name.common}</h3>
