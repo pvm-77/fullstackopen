@@ -1,7 +1,9 @@
 
 import React from 'react'
+
 import { useSelector, useDispatch } from 'react-redux';
 import { castVote } from '../reducers/anecdoteReducer';
+
 const Anecdote = ({ anecdote, handleClick }) => {
     return (
         <div key={anecdote.id}>
@@ -15,7 +17,7 @@ const Anecdote = ({ anecdote, handleClick }) => {
 }
 const AnecdoteList = () => {
     const dispatch = useDispatch()
-    const anecdotes = useSelector(state => state)
+    const anecdotes = useSelector(state => state.anecdotes  )
     return (
         <ul>{
             anecdotes.map(anecdote =>
