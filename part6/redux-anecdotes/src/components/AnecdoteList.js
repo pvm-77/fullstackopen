@@ -2,10 +2,11 @@
 import React from 'react'
 
 import { useSelector, useDispatch } from 'react-redux';
-import { vote } from '../reducers/anecdoteReducer';
+import { updateAnecdoteVote } from '../reducers/anecdoteReducer';
+import { createNotification } from '../reducers/notificationReducer';
 
 const Anecdote = ({ anecdote, handleClick }) => {
-    console.log(anecdote.id);
+    // console.log(anecdote.id);
     return (
         <div key={anecdote.id}>
             <div>{anecdote.content}</div>
@@ -17,16 +18,32 @@ const Anecdote = ({ anecdote, handleClick }) => {
     )
 }
 const AnecdoteList = () => {
+    const compareVotes = (a, b) => a.votes - b.votes
+
     const dispatch = useDispatch()
-    const anecdotes = useSelector(state => state.anecdotes)
-    
+    const anecdotes = useSelector((state) =>
+        state.filter
+            ? state.anecdotes.filter((anecdote) =>
+                anecdote.content.toLowerCase().includes(state.filter.toLowerCase())
+            )
+            : state.anecdotes
+    );
+    const anecdotesForComparison=[...anecdotes]
+    const addVoteToAnecdote = (anecdote) => {
+
+        dispatch(updateAnecdoteVote(anecdote))
+        dispatch(createNotification(`u voted ${anecdote.content}`, 2))
+
+
+    }
+
     return (
         <ul>{
-            anecdotes.map(anecdote =>
+            anecdotesForComparison.sort(compareVotes).map(singleanecdote =>
                 <Anecdote
-                    key={anecdote.id}
-                    anecdote={anecdote}
-                    handleClick={() => dispatch(vote(anecdote))}
+                    key={singleanecdote.id}
+                    anecdote={singleanecdote}
+                    handleClick={() => addVoteToAnecdote(singleanecdote)}
                 />
             )
         }
