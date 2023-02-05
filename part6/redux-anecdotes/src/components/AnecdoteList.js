@@ -1,12 +1,8 @@
-
-import React from 'react'
-
 import { useDispatch, connect } from 'react-redux';
 import { updateAnecdoteVote } from '../reducers/anecdoteReducer';
 import { createNotification } from '../reducers/notificationReducer';
 
 const Anecdote = ({ anecdote, handleClick }) => {
-    // console.log(anecdote.id);
     return (
         <div key={anecdote.id}>
             <div>{anecdote.content}</div>

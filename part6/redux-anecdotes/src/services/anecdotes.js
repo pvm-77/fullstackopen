@@ -12,12 +12,10 @@ const createNew = async (content) => {
   const response = await axios.post(baseUrl, object)
   return response.data
 }
-
 const update = async (updatedObject) => {
   console.log(updatedObject);
-  // console.log('id in service ',id);
+
   const response = await axios.put(`${baseUrl}/${updatedObject.id}`, updatedObject)
-  console.log('update response service',response.data);
   return response.data
 }
 

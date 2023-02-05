@@ -9,6 +9,7 @@ describe('unicafe reducer', () => {
   }
 
   test('should return a proper initial state when called with undefined state', () => {
+    // eslint-disable-next-line no-unused-vars
     const state = {}
     const action = {
       type: 'DO_NOTHING'
@@ -31,5 +32,44 @@ describe('unicafe reducer', () => {
       ok: 0,
       bad: 0
     })
+  })
+
+  test('bad is increatmented',()=>{
+    const action ={
+      type:'BAD',
+    }
+    const state=initialState
+    deepFreeze(state)
+    const newState=counterReducer(state,action)
+    expect(newState).toEqual({good:0,ok:0,bad:1})
+  })
+
+  test('ok is increatemented',()=>{
+    const state=initialState
+    deepFreeze(state)
+    const action={
+      type:'OK'
+    }
+    const newState=counterReducer(state,action)
+    expect(newState).toEqual({
+      good:0,
+      bad:0,
+      ok:1,
+
+    })
+
+  })
+
+  test('reset is pressed',()=>{
+    const state={
+      good:2,
+      bad:3,
+      ok:5
+    }
+    const action ={
+      type:'ZERO'
+    }
+    const newState=counterReducer(state,action)
+    expect(initialState).toEqual(newState)
   })
 })
