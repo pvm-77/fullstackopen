@@ -70,6 +70,6 @@ describe('unicafe reducer', () => {
       type:'ZERO'
     }
     const newState=counterReducer(state,action)
-    expect(initialState).toEqual(newState)
+    expect(newState).toEqual(initialState)
   })
 })

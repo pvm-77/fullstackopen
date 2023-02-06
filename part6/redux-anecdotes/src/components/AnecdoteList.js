@@ -1,6 +1,7 @@
 import { useDispatch, connect } from 'react-redux';
-import { updateAnecdoteVote } from '../reducers/anecdoteReducer';
-import { createNotification } from '../reducers/notificationReducer';
+import { castVote } from '../reducers/anecdoteReducer';
+// import { createNotification } from '../reducers/notificationReducer';
+import { addVote } from '../reducers/anecdoteReducer';
 
 const Anecdote = ({ anecdote, handleClick }) => {
     return (
@@ -17,9 +18,9 @@ const AnecdoteList = (props) => {
     const anecdotes = [...props.anecdotes]
     const compareVotes = (a, b) => a.votes - b.votes
     const dispatch = useDispatch()
-    const addVoteToAnecdote = (anecdote) => {
-        dispatch(updateAnecdoteVote(anecdote))
-        dispatch(createNotification(`u voted ${anecdote.content}`, 5))
+    const handleVoteToAnecdote = (anecdote) => {
+        dispatch(castVote(anecdote))
+        
     }
     return (
         <ul>{
@@ -27,7 +28,7 @@ const AnecdoteList = (props) => {
                 <Anecdote
                     key={singleanecdote.id}
                     anecdote={singleanecdote}
-                    handleClick={() => addVoteToAnecdote(singleanecdote)}
+                    handleClick={() => handleVoteToAnecdote(singleanecdote)}
                 />
             )
         }
