@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
-import Notification from './Notification'
-const BlogForm = ({ createBlog, errorMessage, successMessage }) => {
+
+const BlogForm = ({ createBlog }) => {
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
@@ -26,8 +26,7 @@ const BlogForm = ({ createBlog, errorMessage, successMessage }) => {
           <h2 className='create-blog-title'>create new</h2>
           {/* <img src='' alt='' className='' /> */}
         </header>
-        {errorMessage && <Notification cls='error' msg={errorMessage} />}
-        {successMessage && <Notification cls='success' msg={successMessage} />}
+
         <main>
           <form onSubmit={addBlog}>
             <div>
@@ -54,7 +53,7 @@ const BlogForm = ({ createBlog, errorMessage, successMessage }) => {
                 onChange={({ target }) => setNewUrl(target.value)}
                 placeholder='enter url here' /></div>
             {/* <button type='submit'>create</button> */}
-            <button className="button" type='submit'>
+            <button id='create-blog-btn' className="button" type='submit'>
               <div className="button__content">
                 <div className="button__icon">
                   {/* <img src={viewBlog} alt='view-blog'/> */}

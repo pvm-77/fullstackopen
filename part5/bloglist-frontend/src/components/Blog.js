@@ -1,12 +1,15 @@
+/* eslint-disable no-unused-vars */
 import { useState } from 'react'
 import viewBlog from './viewBlog.png'
 const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
-  console.log('blog', blog)
-  console.log('user', user)
 
-  const [isBlogDetailsOpen, setIsBlogDetailsOpen] = useState(false)
+  // const [isBlogDetailsOpen, setIsBlogDetailsOpen] = useState(false)
+  const [fullBlogDetailVisible, setFullBlogDetailVisible] = useState(false)
+  // const hideWhenFullBlogDetailVisible = { display: fullBlogDetailVisible ? 'none' : '' }
+  const showWhenFullBlogDetailVisible = { display: fullBlogDetailVisible ? '' : 'none' }
   const Toggle = () => {
-    setIsBlogDetailsOpen(!isBlogDetailsOpen)
+    // setIsBlogDetailsOpen(!isBlogDetailsOpen)
+    setFullBlogDetailVisible(!fullBlogDetailVisible)
   }
 
   const handleDeleteBlog = (blog) => {
@@ -42,59 +45,62 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
     border: 'solid', borderWidth: 1, marginBottom: 5,
     marginRight: 20
   }
-  if (isBlogDetailsOpen === false) {
-    return (
-      <div id='blog' className='blog' style={blogStyle}>
-        <div style={{ border: 'solid', borderWidth: 1 }}>
-          <div> {blog.title}</div>
+  //   if (isBlogDetailsOpen === false) {
+  //     return (
+  //       <div id='blog' className='blog' style={blogStyle}>
+  //         <div style={{ border: 'solid', borderWidth: 1 }}>
+  //           <div> {blog.title}</div>
+  //
+  //           <div>{blog.author}</div>
+  //         </div>
+  //
+  //         <button id='view-btn' className="button" onClick={Toggle}>
+  //           <div className="button__content">
+  //             <div className="button__icon">
+  //               <img src={viewBlog} alt='view-blog' />
+  //             </div>
+  //             <p className="button__text">view</p>
+  //           </div>
+  //         </button>
+  //       </div>
+  //     )
+  //   }
 
-          <div>{blog.author}</div>
-        </div>
-        {/* <button>view</button> */}
-
-        <button className="button" onClick={Toggle}>
-          <div className="button__content">
-            <div className="button__icon">
-              <img src={viewBlog} alt='view-blog' />
-            </div>
-            <p className="button__text">view</p>
-          </div>
-        </button>
-      </div>
-    )
-  } else {
-    return (
-      <div id='blog' style={blogStyle}>
+  // else {
+  return (
+    <div id='blog' className='blog'>
+      <div style={blogStyle}>
         <div style={{ border: 'solid', borderWidth: 1 }}>
           <p>{blog.title} {blog.author}</p>
-          <p>{blog.url}</p>
-          <p>likes {blog.likes} <button onClick={handleLikePost}>like</button></p>
-          <p>{blog.user.name}</p>
-          {blog.user.username === user.username ? <button className="button" onClick={() => handleDeleteBlog(blog)}>
-            <div className="button__content">
-              <div className="button__icon">
-                <img src={viewBlog} alt='view-blog' />
+          <div style={showWhenFullBlogDetailVisible} className='expand-blog-detail'>
+            <p>{blog.url}</p>
+            <p>likes {blog.likes} <button id='like-btn' onClick={handleLikePost}>like</button></p>
+            <p>{blog.user.name}</p>
+            {blog.user.username === user.username ? <button id='view-btn-detail' className="button" onClick={() => handleDeleteBlog(blog)}>
+              <div className="button__content">
+                <div className="button__icon">
+                  <img src={viewBlog} alt='view-blog' />
+                </div>
+                <p className="button__text">remove</p>
               </div>
-              <p className="button__text">remove</p>
-            </div>
-          </button> : null}
-
-
+            </button> : null}
+          </div>
         </div>
-        {/* <button>view</button> */}
-        <button className="button" onClick={Toggle}>
+
+        <button id='btn' className="button" onClick={Toggle}>
           <div className="button__content">
             <div className="button__icon">
               <img src={viewBlog} alt='view-blog' />
             </div>
-            <p className="button__text">hide</p>
+            <p className="button__text">{fullBlogDetailVisible ? 'hide' : 'view'}</p>
           </div>
         </button>
       </div>
-    )
-
-  }
+    </div>
+  )
 
 }
+
+// }
 
 export default Blog

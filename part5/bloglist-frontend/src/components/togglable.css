@@ -1,0 +1,13 @@
+.togglableContent{
+    display: flex;
+    
+    margin:  auto;
+    line-height: normal;
+    padding-left: 0px;
+    align-items: center;
+    flex-direction: column;
+}
+.cancel-btn{
+    text-align: center;
+   
+}

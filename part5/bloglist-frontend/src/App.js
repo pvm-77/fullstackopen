@@ -2,10 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
-// import bg from './trianglify-lowres.png'
-// import loginLogo from './login.png'
-// import Modal from './components/Modal'
-// import background from './background.png'
+
 import './app.css'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
@@ -16,14 +13,12 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [successMessage, setSuccessMessage] = useState(null)
+  const [notice, setNotice] = useState(null)
+
   const blogFormRef = useRef()
 
   useEffect(() => {
-    console.log('effect')
     blogService.getAll().then(blogs => {
-      console.log('promise fulfilled')
       setBlogs(blogs)
     }
     )
@@ -54,10 +49,12 @@ const App = () => {
       setUsername('')
       setPassword('')
 
+
+
     } catch (error) {
-      setErrorMessage(error.response.data.error)
+      setNotice(`error is ${error.response.data.error}`)
       setTimeout(() => {
-        setErrorMessage(null)
+        setNotice(null)
       }, 5000)
 
     }
@@ -69,19 +66,15 @@ const App = () => {
     try {
       blogFormRef.current.toggleVisibility()
       const newBlog = await blogService.create(blogObject)
-
-
       setBlogs(blogs.concat({ ...newBlog, user }))
-
-      setSuccessMessage(` ${newBlog.title} added by ${user.username}`)
+      setNotice(` ${newBlog.title} added by ${user.username}`)
       setTimeout(() => {
-        setSuccessMessage(null)
+        setNotice(null)
       }, 3000)
     } catch (error) {
-      console.log(error)
-      setErrorMessage(error.response.data.error)
+      setNotice(`error is ${error.response.data.error}`)
       setTimeout(() => {
-        setSuccessMessage(null)
+        setNotice(null)
       }, 3000)
     }
 
@@ -106,40 +99,38 @@ const App = () => {
     }
 
   }
-  if (user === null) {
-    return (
-      <div >
-        <Togglable buttonLabel='login' ref={blogFormRef}>
-          <LoginForm username={username} password={password}
-            errorMessage={errorMessage} successMessage={successMessage}
-            handleUsernameChange={(e) => setUsername(e.target.value)}
-            handlePasswordChange={(e) => setPassword(e.target.value)}
-            handleSubmit={handleLogin}
-          />
-        </Togglable>
 
-      </div>
-    )
-  }
+
 
   return (
     <div>
-      <h2>blogs</h2>
-      {successMessage && <Notification cls='success' msg={successMessage} />}
-      {errorMessage && <Notification cls='error' msg={errorMessage} />}
-      <p> {user.username} logged in  <button onClick={handleLogout}>logout</button></p>
+      <Notification notice={notice} />
+      {user === null ? <LoginForm
+        username={username}
+        password={password}
+        handleUsernameChange={(e) => setUsername(e.target.value)}
+        handlePasswordChange={(e) => setPassword(e.target.value)}
+        handleSubmit={handleLogin}
+      /> :
+        <>
+          <h2>blogs</h2>
+
+          <p> {user.username} logged in  <button onClick={handleLogout}>logout</button></p>
+          <Togglable buttonLabel='create new' ref={blogFormRef}>
+            <BlogForm
+              createBlog={addBlog}
+            />
+          </Togglable>
+
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} user={user} />
+          )}
+        </>
 
 
-      <Togglable buttonLabel='create new' ref={blogFormRef}>
-        <BlogForm
-          createBlog={addBlog}
-          successMessage={successMessage}
-          errorMessage={errorMessage}
-        />
-      </Togglable>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} user={user} />
-      )}
+      }
+
+
     </div>
   )
 

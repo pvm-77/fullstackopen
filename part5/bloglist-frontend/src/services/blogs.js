@@ -8,8 +8,6 @@ const setToken = (newToken) => {
 }
 
 const create = async (newObject) => {
-  console.log(`in service ${newObject}`)
-  console.log(newObject)
   const config = {
     headers: { Authorization: token },
   }
