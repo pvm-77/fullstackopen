@@ -1,34 +1,34 @@
 /* eslint-disable no-undef */
 
 describe('Blog app', function () {
-  // beforeEach(function () {
-  //   // make a request to clean database using cypress
-  //   cy.request('POST', 'http://localhost:3001/api/testing/reset')
-  //   const user = {
-  //     name: 'John Deo',
-  //     username: 'johndeo297',
-  //     password: 'somepassword'
+  beforeEach(function () {
+    // make a request to clean database using cypress
+    cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
+    const user = {
+      name: 'John Deo',
+      username: 'johndeo297',
+      password: 'somepassword'
 
-  //   }
-  //   // make  request to create user using cypress
-  //   cy.request('POST', 'http://localhost:3001/api/users', user)
-  //   cy.visit('http://localhost:3000')
-  // })
+    }
+    // make  request to create user using cypress
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
+    cy.visit('')
+  })
   it('login form is shown', function () {
-    cy.visit('http://localhost:3000')
+    cy.visit('')
     cy.contains('login').click()
   })
 
   describe('Login', () => {
     it('succeeds with correct credentials', function () {
-      cy.visit('http://localhost:3000')
+      cy.visit('')
 
       cy.contains('login').click()
       // get field by id and type
-      cy.get('#username').type('mohib297')
+      cy.get('#username').type('johndeo297')
       cy.get('#password').type('somepassword')
       cy.get('#loginBtn').click()
-      cy.contains('mohib297 logged in')
+      cy.contains('johndeo297 logged in')
     })
     it('fails with wrong credentials', function () {
       cy.contains('login').click()
@@ -43,11 +43,12 @@ describe('Blog app', function () {
   describe('when logged in', () => {
     // login here
     beforeEach(function () {
-      cy.contains('login').click()
-      // get field by id and type
-      cy.get('#username').type('johndeo297')
-      cy.get('#password').type('somepassword')
-      cy.get('#loginBtn').click()
+      // cy.contains('login').click()
+      // // get field by id and type
+      // cy.get('#username').type('johndeo297')
+      // cy.get('#password').type('somepassword')
+      // cy.get('#loginBtn').click()
+      cy.login({ username: 'johndeo297', password: 'somepassword' })
     })
     it('a new blog can be created', function () {
       cy.contains('create new').click()
@@ -72,6 +73,7 @@ describe('Blog app', function () {
 
 
     })
+
   })
 
 
