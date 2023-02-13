@@ -25,7 +25,7 @@ const Togglable = forwardRef((props, refs) => {
             <div className="button__icon">
               {/* <img src={viewBlog} alt='view-blog' /> */}
             </div>
-            <p className="button__text">{props.buttonLabel}</p>
+            <p id='button__text' className="button__text">{props.buttonLabel}</p>
           </div>
         </button>
       </div>

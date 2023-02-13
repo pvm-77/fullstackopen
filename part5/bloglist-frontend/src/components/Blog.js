@@ -81,7 +81,7 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
                 <div className="button__icon">
                   <img src={viewBlog} alt='view-blog' />
                 </div>
-                <p className="button__text">remove</p>
+                <p id='delete-blog-btn' className="button__text">remove</p>
               </div>
             </button> : null}
           </div>
