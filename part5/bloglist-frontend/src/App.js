@@ -23,7 +23,7 @@ const App = () => {
     }
     )
   }, [])
-  console.log('render', blogs.length, 'blogs')
+
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistAppUser')

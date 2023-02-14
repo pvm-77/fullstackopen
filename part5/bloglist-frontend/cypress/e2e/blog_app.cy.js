@@ -57,39 +57,124 @@ describe('Blog app', function () {
 
     it('user can like a blog', function () {
 
-      // cy.get('#button__text').click()
-      // cy.get('#title').type('how to sample test with cypress')
-      // cy.get('#author').type('Bruno Happy')
-      // cy.get('#url').type('howtocypress.html')
-      // cy.get('#create-blog-btn').click()
-      // cy.contains('view').click()
-      // cy.contains('0')
-      // cy.contains('like').click()
-      // cy.contains('1')
+      cy.get('#button__text').click()
+      cy.get('#title').type('how to sample test with cypress')
+      cy.get('#author').type('Bruno Happy')
+      cy.get('#url').type('howtocypress.html')
+      cy.get('#create-blog-btn').click()
+
+      cy.contains('view').click()
+      cy.contains('0')
+      cy.contains('like').click()
+      cy.contains('1')
     })
 
     it('user can delete a blog', function () {
-      // cy.get('#button__text').click()
-      // cy.get('#title').type('how to sample test with cypress')
-      // cy.get('#author').type('Bruno Happy')
-      // cy.get('#url').type('howtocypress.html')
-      // cy.get('#create-blog-btn').click()
-      // cy.contains('view').click()
-      // cy.contains('0')
-      // cy.contains('like').click()
-      // cy.contains('1')
-      // cy.get('#delete-blog-btn').click()
-      // cy.wait(5000)
-      // cy.get('html').should('not.contain', 'how to sample test with cypress')
+      cy.get('#button__text').click()
+      cy.get('#title').type('how to sample test with cypress')
+      cy.get('#author').type('Bruno Happy')
+      cy.get('#url').type('howtocypress.html')
+      cy.get('#create-blog-btn').click()
+      cy.contains('view').click()
+      cy.contains('0')
+      cy.contains('like').click()
+      cy.contains('1')
+      cy.get('#delete-blog-btn').click()
+      cy.wait(5000)
+      cy.get('html').should('not.contain', 'how to sample test with cypress')
 
 
     })
-    it('other users but the creator do not see the delete button', () => {
 
+    it('other users but the creator do not see the delete button', () => {
+      cy.get('#button__text').click()
+      cy.get('#title').type('how to sample test with cypress')
+      cy.get('#author').type('Bruno Happy')
+      cy.get('#url').type('howtocypress.html')
+      cy.get('#create-blog-btn').click()
+      cy.contains('view').click()
+      cy.contains('remove')
 
     })
 
     it('blogs are ordered according to likes with the blog with the most likes being first. ', () => {
+      cy.createBlog(
+        {
+          title: 'test1 blog using cypress',
+          author: 'John Deo',
+          url: 'john.deo.test1.com',
+
+        }
+      )
+      cy.createBlog(
+        {
+          title: 'test2 blog using cypress',
+          author: 'John Deo',
+          url: 'john.deo.test2.com',
+
+        }
+      )
+      cy.createBlog(
+        {
+          title: 'test3 blog using cypress',
+          author: 'John Deo',
+          url: 'john.deo.test3.com',
+
+        }
+      )
+
+      cy.contains('test1 blog using cypress').parent().parent().parent()
+        .find('button')
+        .should('contain', 'view')
+        .click({ multiple: true })
+      cy.contains('test1 blog using cypress').parent().parent().parent()
+        .parent()
+        .find('button')
+        .should('contain', 'like')
+        .as('1like')
+
+      cy.contains('test2 blog using cypress').parent().parent().parent()
+        .find('button')
+        .should('contain', 'view')
+        .click()
+      cy.contains('test2 blog using cypress').parent().parent().parent()
+        .parent()
+        .find('button')
+        .should('contain', 'like')
+        .as('2likes')
+
+      cy.contains('test3 blog using cypress').parent().parent().parent()
+        .find('button')
+        .should('contain', 'view')
+        .click()
+      cy.contains('test3 blog using cypress').parent().parent().parent()
+        .parent()
+        .find('button')
+        .should('contain', 'like')
+        .as('3likes')
+
+      cy.get('@1like').contains('like').as('like1')
+      cy.get('@2likes').contains('like').as('like2')
+      cy.get('@3likes').contains('like').as('like3')
+
+      cy.get('@like1').click()
+      cy.wait(100)
+      cy.get('@like2').click()
+      cy.wait(100)
+      cy.get('@like2').click()
+      cy.wait(100)
+      cy.get('@like3').click()
+      cy.wait(100)
+      cy.get('@like3').click()
+      cy.wait(100)
+      cy.get('@like3').click()
+      cy.wait(100)
+      cy.get('div').then(blogs => {
+        expect(blogs[0]).to.contain.text('test3 blog using cypress')
+        expect(blogs[1]).to.contain.text('test2 blog using cypress')
+        expect(blogs[2]).to.contain.text('test1 blog using cypress')
+      })
+
 
     })
 
