@@ -1,40 +1,35 @@
+
+
+
 export interface CoursePartBase {
-    name: string;
-    exerciseCount: number;
-    description?: string;
-  }
-  
-  export interface CoursePartOne extends CoursePartBase {
-    name: "Fundamentals";
-    description?: string;
-  }
-  
-  export interface CoursePartTwo extends CoursePartBase {
-    name: "Using props to pass data";
-    groupProjectCount: number;
-  }
-  
-  export interface CoursePartThree extends CoursePartBase {
-    name: "Deeper type usage";
-    exerciseSubmissionLink: string;
-  }
-  
-  export interface CoursePartFour extends CoursePartBase {
-      name: "Another course part";
-      comment: string;
-    }
-  
-  export interface HeaderProps {
-      courseName: string;
-  }
-  
-  type CoursePart = CoursePartOne | CoursePartTwo | CoursePartThree | CoursePartFour;
-  
-  export interface ContentProps {
-      [x: string]: any;
-      courseParts: CoursePart[];
-  }
-  
-  export interface PartProps {
-      part: CoursePart;
-  }
+  name: string;
+  exerciseCount: number;
+}
+
+export interface CoursePartBasic extends CoursePartDescription {
+  kind: "basic";
+}
+
+export interface CoursePartGroup extends CoursePartBase {
+  groupProjectCount: number;
+  kind: "group";
+}
+
+export interface CoursePartBackground extends CoursePartDescription {
+  kind: "background";
+  backgroundMaterial: string;
+}
+export interface CoursePartSpecial extends CoursePartDescription {
+  requirements: string[];
+  kind: "special";
+}
+export interface CoursePartDescription extends CoursePartBase {
+  description: string;
+}
+
+
+export type CoursePart =
+  | CoursePartBasic
+  | CoursePartBackground
+  | CoursePartGroup
+  | CoursePartSpecial

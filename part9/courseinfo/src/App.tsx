@@ -1,62 +1,61 @@
-interface HeaderProps {
-  name: string;
-}
-interface CoursePart {
-  name: string;
-  exerciseCount: number;
-}
-interface ContentProps {
-  courseParts: CoursePart[];
-}
-interface TotalProps {
-  courseParts: CoursePart[];
-}
-const Header = (props: HeaderProps) => {
-  return <h1>{props.name}</h1>;
-};
-const Total = (props: TotalProps) => {
-  return (
-    <p>
-      Number of exercises{" "}
-      {props.courseParts.reduce((carry, part) => carry + part.exerciseCount, 0)}
-    </p>
-  );
-};
+import Header from "./components/Header";
+import Content from './components/Content'
+import Total from "./components/Total";
 
-const Content = (props: ContentProps) => {
-  console.log(props.courseParts)
+import { CoursePart } from "./types";
 
-  return(
-    <div>{
-      props.courseParts.map(p=><p key={p.name}>{p.name}  {p.exerciseCount}</p>)
-    }</div>
-  )
-};
+
+
+
 const App = () => {
   const courseName = "Half Stack application development";
   const courseParts: CoursePart[] = [
     {
       name: "Fundamentals",
       exerciseCount: 10,
+      description: "This is an awesome course part",
+      kind: "basic",
     },
     {
       name: "Using props to pass data",
       exerciseCount: 7,
+      groupProjectCount: 3,
+      kind: "group",
+    },
+    {
+      name: "Basics of type Narrowing",
+      exerciseCount: 7,
+      description: "How to go from unknown to string",
+      kind: "basic",
     },
     {
       name: "Deeper type usage",
       exerciseCount: 14,
+      description: "Confusing description",
+      backgroundMaterial:
+        "https://type-level-typescript.com/template-literal-types",
+      kind: "background",
     },
+    {
+      name: "TypeScript in frontend",
+      exerciseCount: 10,
+      description: "a hard part",
+      kind: "basic",
+    },
+    {
+      name: "Backend development",
+      exerciseCount: 21,
+      description: "Typing the backend",
+      requirements: ['nodejs','jest'],
+      kind: "special"
+    }
   ];
-
   return (
     <div>
       <Header name={courseName} />
       <Content courseParts={courseParts} />
-
       <Total courseParts={courseParts} />
     </div>
   );
 };
-
 export default App;

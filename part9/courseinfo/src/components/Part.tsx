@@ -1,13 +1,61 @@
-import React from "react";
-import { PartProps } from "../types";
-const Part = ({ part }: PartProps): JSX.Element => {
+import { CoursePart } from "../types";
+const Part = ({ part }: { part: CoursePart }) => {
+  let description: JSX.Element = <></>;
+  switch (part.kind) {
+    case "background":
+      description = (
+        <>
+          <p>
+            <i>{part.description}</i>
+          </p>
+          <p>submit to {" "}
+            <i>{part.backgroundMaterial}</i>
+          </p>
+        </>
+      );
+
+      break;
+    case "basic":
+      description = (
+        <p>
+          <i>{part.description}</i>
+        </p>
+      );
+      break;
+
+    case "group":
+      description = (
+        <p>project exercises
+          <i>{part.groupProjectCount}</i>
+        </p>
+      );
+      break;
+    case "special":
+      description = (
+        <>
+        <p>
+          <i>{part.description}</i>
+        </p>
+          <p>{part.requirements.join(",")}</p>
+        </>
+      );
+      break;
+
+    default:
+      break;
+  }
+
   return (
-    <div>
-      <b>
-        {part.name} {part.exerciseCount}
-      </b>
-      <i>{part.description}</i>
-    </div>
+    <>
+      <p>
+        <b>
+          {part.name} {part.exerciseCount}
+        </b>
+      </p>
+      {description}
+
+      <hr />
+    </>
   );
 };
 
