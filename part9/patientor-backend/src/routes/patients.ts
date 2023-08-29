@@ -1,24 +1,24 @@
+
+
+
+
 import express from 'express';
-
-import patientService from '../services/patientService';
-import { toNewPatientEntry } from '../util';
-const patientRouter = express.Router();
-
-patientRouter.get('/', (_req, res) => {
-    res.send(patientService.getPatientsWithoutSSN());
-});
+import { getPatientsWithoutSSN } from '../services/patientService';
+import { addPatient } from '../services/patientService';
+const patientRouter=express.Router();
 
 
-patientRouter.post('/',(req,res)=>{
-    try {
-            const newPatient=toNewPatientEntry(req.body);
-            const addedPatient=patientService.addPatient(newPatient);
-            res.status(201).json()
-        
-    } catch (error) {
-        
-    }
+
+patientRouter.get('/',(_req,res)=>{
+    res.send(getPatientsWithoutSSN());
+
 })
 
+patientRouter.post('/',(req,res)=>{
+    const {name,dateOfBirth,ssn,gender,occupation}=req.body;
+    
+    const addedPatient=addPatient({name,dateOfBirth,ssn,gender,occupation});
+    res.send(addedPatient);
+})
 
 export default patientRouter;
