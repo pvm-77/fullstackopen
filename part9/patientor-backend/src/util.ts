@@ -1,17 +1,17 @@
-import { NewPatient } from "./types";
+import { NewPatient,Gender } from "./types";
+
+
 const toNewPatient = (object: unknown): NewPatient => {
     if(!object || typeof object!=='object' ){
         throw new Error("incorrect or missing data");
         
     }
-
     if('name' in object && 'ssn' in object && 'dateOfBirth' in object && 'gender' in object && 'occupation' in object){
-
         const newPatient: NewPatient = {
             name: parseString(object.name),
-            dateOfBirth: parseDOB(object.name),
+            dateOfBirth: parseDOB(object.dateOfBirth),
             ssn: parseString(object.ssn),
-            gender: parseString(object.gender),
+            gender: parseGender(object.gender),
             occupation: parseString(object.occupation),
     
         };
@@ -25,20 +25,39 @@ const toNewPatient = (object: unknown): NewPatient => {
     
 }
 
+// type guards
+const isGender=(str:string):str is Gender=>{
+    // return ['male','female'].includes(str);
+    // second approach
+    return Object.values(Gender).map(g=>g.toString()).includes(str);
+}
+const isString=(text:unknown):text is string=>{
+        return typeof text==='string' || text instanceof String;
+}
 const isDOB=(dob:string):boolean=>{
     return Boolean(Date.parse(dob));
 }
-const parseDOB = (dob: unknown): string => {
-    if (!dob || !isString(dob) || !isDOB(dob)) {
-        throw new Error('incorrect or missing dob'+dob);
+
+// const isDate=(date:string):boolean=>{
+//     return Boolean(Date.parse(date));
+// }
+
+const parseDOB = (dateOfBirth: unknown): string => {
+    // console.log('the dob is',dateOfBirth)
+
+    if (!dateOfBirth|| !isString(dateOfBirth) || !isDOB(dateOfBirth)) {
+        throw new Error('incorrect or missing dob :'+dateOfBirth);
     }
-    return dob;
+    return dateOfBirth;
 }
-const isString = (text: unknown): text is string => {
-    return typeof text === 'string' || text instanceof String;
-
-}
-
+// const parseDate=(date:unknown):string=>{
+//     if (!date || !isString(date) || isDate(date)) {
+//         throw new Error("incorrect or missing date: "+date);
+        
+        
+//     }
+//     return date;
+// }
 const parseString = (anyString: unknown): string => {
     if (!anyString || !isString(anyString)) {
         throw new Error('in correct or missing' + anyString);
@@ -46,7 +65,13 @@ const parseString = (anyString: unknown): string => {
     return anyString;
 }
 
-
+const parseGender=(gender:unknown):Gender=>{
+    if (!gender|| !isString(gender) || !isGender(gender)) {
+        throw new Error("incorrect or missing gender:"+gender);
+        
+    }
+    return gender;
+}
 
 
 

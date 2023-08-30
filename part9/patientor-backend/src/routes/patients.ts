@@ -3,22 +3,41 @@
 
 
 import express from 'express';
-import { getPatientsWithoutSSN } from '../services/patientService';
+import { findById, getPatientsWithoutSSN } from '../services/patientService';
 import { addPatient } from '../services/patientService';
-const patientRouter=express.Router();
+import toNewPatient from '../util';
+const patientRouter = express.Router();
 
 
+patientRouter.get('/:id', (req, res) => {
+    const patient = findById(req.params.id);
+    if (patient) {
+        res.send(patient)
 
-patientRouter.get('/',(_req,res)=>{
+    } else {
+        res.sendStatus(404);
+    }
+})
+patientRouter.get('/', (_req, res) => {
     res.send(getPatientsWithoutSSN());
 
 })
 
-patientRouter.post('/',(req,res)=>{
-    const {name,dateOfBirth,ssn,gender,occupation}=req.body;
-    
-    const addedPatient=addPatient({name,dateOfBirth,ssn,gender,occupation});
-    res.send(addedPatient);
+patientRouter.post('/', (req, res) => {
+    try {
+        const newPatient = toNewPatient(req.body);
+        const addedPatient = addPatient(newPatient);
+        res.json(addedPatient);
+
+    } catch (error) {
+        let errorMessage = 'something went wrong ';
+        if (error instanceof Error) {
+            errorMessage += ' Error ' + error.message;
+        }
+        res.status(400).send(errorMessage);
+    }
 })
+
+
 
 export default patientRouter;

@@ -5,13 +5,9 @@ import cors from 'cors';
 const app = express();
 app.use(express.json());
 app.use(cors());
-
-    
 app.use('/api/diagnoses', diagnoseRouter);
 app.use('/api/patients', patientRouter);
-
-
-const port = 3000;
+const port = 3001;
 app.listen(port, () => {
     console.log(`server is running on ${port}`);
 });
