@@ -9,8 +9,9 @@ interface BaseEntry {
     description: string;
     date: string;
     specialist: string;
-    diagnosisCodes?: string[];
+    diagnosisCodes?:  Array<Diagnose["code"]>;
 }
+export type NewBaseEntry=Omit<BaseEntry,'id'>;
 
 
 
@@ -38,6 +39,18 @@ export interface OccupationalHealthcareEntry extends BaseEntry {
 }
 
 export type Entry = OccupationalHealthcareEntry | HospitalEntry | HealthCheckEntry;
+
+// define special omit for unions
+
+type UnionOmit<T,K extends string| number|  symbol>=T extends unknown?Omit<T,K>:never;
+// define entry without  the id property
+
+export type EntryWithoutId=UnionOmit<Entry,'id'>
+
+
+
+
+
 
 export interface Diagnose {
     code: string;

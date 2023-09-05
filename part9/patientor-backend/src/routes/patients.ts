@@ -1,14 +1,9 @@
-
-
-
-
 import express from 'express';
 import { findById, getPatientsWithoutSSN } from '../services/patientService';
 import { addPatient } from '../services/patientService';
 import toNewPatient from '../util';
+import toNewEntry from '../util';
 const patientRouter = express.Router();
-
-
 patientRouter.get('/:id', (req, res) => {
     const patient = findById(req.params.id);
     if (patient) {
@@ -38,6 +33,18 @@ patientRouter.post('/', (req, res) => {
     }
 })
 
+// entry for patient 
+patientRouter.post('/:id/entries',(req,res)=>{
+
+    try {
+        
+        const newEntry=toNewEntry(req.body);
+
+    } catch (error) {
+        
+    }
+
+})
 
 
 export default patientRouter;

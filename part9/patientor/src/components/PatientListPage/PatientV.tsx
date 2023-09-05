@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import FemaleIcon from "@mui/icons-material/Female";
+import { Box,TextField } from "@mui/material";
 import { Patient } from "../../types";
 import patientService from "../../services/patients";
-
+import Container from '@mui/material/Container';
 import { Entry } from "../../types";
 
 const EntryDetails = ({ entry }: { entry: Entry }) => {
@@ -21,10 +22,13 @@ const EntryDetails = ({ entry }: { entry: Entry }) => {
 };
 
 const HealthCheckEntry = ({ entry }: { entry: Entry }) => {
+  console.log(entry);
   return (
-    <div>
+    <div >
       <p>{entry.date}</p>
       <p>{entry.description}</p>
+      <p>diagnose by {entry.specialist}</p>
+
     </div>
   );
 };
@@ -34,17 +38,35 @@ const HospitalEntry = ({ entry }: { entry: Entry }) => {
     <div>
       <p>{entry.date}</p>
       <p>{entry.description}</p>
+      <p>diagnose by {entry.specialist}</p>
+
     </div>
   );
 };
 const OccupationalHealthcareEntry = ({ entry }: { entry: Entry }) => {
+  console.log(entry);
+
   return (
     <div>
       <p>{entry.date}</p>
       <p>{entry.description}</p>
+      <p>diagnose by {entry.specialist}</p>
     </div>
   );
 };
+
+const EntryForm=()=>{
+  return(
+    <Container fixed> 
+      <form>
+      <TextField label='description' variant="standard"/>
+      <TextField label="date"   variant="standard"/>
+      <TextField  label="specialist" variant="standard"/>
+      <TextField  label="healthcheck rating" variant="standard"/>
+      </form>
+    </Container>
+  )
+}
 const PatientV = () => {
   const [patient, setPatient] = useState<Patient>({} as Patient);
   const { id } = useParams();
@@ -73,10 +95,13 @@ const PatientV = () => {
 
       <p>ssh:{patient.ssn}</p>
       <p>occupation:{patient.occupation}</p>
+      <EntryForm/>
+
+
+
 
       <div>
         <h2>entries</h2>
-        <p>yes correct</p>
         {patient.entries &&
           patient.entries.map((entry) => <EntryDetails entry={entry} />)}
       </div>
