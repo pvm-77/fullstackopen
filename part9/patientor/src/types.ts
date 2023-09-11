@@ -12,9 +12,19 @@ export enum Gender {
   Other = "other"
 }
 
-
+export interface Patient {
+  id: string;
+  name: string;
+  occupation: string;
+  gender: Gender;
+  ssn?: string;
+  dateOfBirth?: string;
+  entries:Entry[];
+}
 
 export type PatientFormValues = Omit<Patient, "id" | "entries">;
+
+
 
 export enum HealthCheckRating {
   "Healthy" = 0,
@@ -30,13 +40,10 @@ interface BaseEntry {
   diagnosisCodes?: string[];
 }
 
-
-
 export interface HealthCheckEntry extends BaseEntry {
   type: 'HealthCheck';
   healthCheckRating: HealthCheckRating;
 }
-
 
 export interface HospitalEntry extends BaseEntry {
   type: "Hospital";
@@ -55,14 +62,12 @@ export interface OccupationalHealthcareEntry extends BaseEntry {
   }
 }
 
+
 export type Entry = OccupationalHealthcareEntry | HospitalEntry | HealthCheckEntry;
 
-export interface Patient {
-  id: string;
-  name: string;
-  occupation: string;
-  gender: Gender;
-  ssn?: string;
-  dateOfBirth?: string;
-  entries:Entry[];
-}
+// define special omit for unions
+type UnionOmit<T,K extends string| number|  symbol>=T extends unknown?Omit<T,K>:never;
+
+export type EntryWithoutId=UnionOmit<Entry,'id'>
+
+export type EntryFormValues=UnionOmit<Entry,'id'>;

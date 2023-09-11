@@ -1,8 +1,10 @@
 import express from 'express';
-import { findById, getPatientsWithoutSSN } from '../services/patientService';
+import { addEntry, findById, getPatientsWithoutSSN } from '../services/patientService';
 import { addPatient } from '../services/patientService';
-import toNewPatient from '../util';
-import toNewEntry from '../util';
+// import toNewPatient from '../util';
+// import toNewEntry from '../util';
+import { toNewEntry } from '../util';
+import { toNewPatient } from '../util';
 const patientRouter = express.Router();
 patientRouter.get('/:id', (req, res) => {
     const patient = findById(req.params.id);
@@ -34,14 +36,27 @@ patientRouter.post('/', (req, res) => {
 })
 
 // entry for patient 
-patientRouter.post('/:id/entries',(req,res)=>{
-
+patientRouter.post('/:id/entries', (req, res) => {
     try {
-        
-        const newEntry=toNewEntry(req.body);
+        const patient = findById(req.params.id);
+        if (!patient) {
+            return res.status(404).json({ error: 'Patient not found' });
+        }
+        const newEntry = toNewEntry(req.body);
+        console.log('new ENtry is',newEntry)
+        if (!newEntry) {
+            return res.status(404).json({ error: 'invalid entry ' });
+        }
+        const addedEntry = addEntry(patient, newEntry);
+        return res.status(201).json(addedEntry)
 
     } catch (error) {
-        
+
+        let errorMessage = 'something went wrong ';
+        if (error instanceof Error) {
+            errorMessage += ' Error ' + error.message;
+        }
+        return res.status(500).send(errorMessage);
     }
 
 })
