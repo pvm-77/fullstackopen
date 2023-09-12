@@ -6,8 +6,10 @@ import { EntryFormValues, Patient } from "../../types";
 import patientService from "../../services/patients";
 import Container from "@mui/material/Container";
 import { Entry } from "../../types";
+import axios from "axios";
 
 import AddEntryModal from "../AddEntryModal";
+import { create } from "../../services/entry";
 
 const EntryDetails = ({ entry }: { entry: Entry }) => {
   switch (entry.type) {
@@ -69,6 +71,7 @@ const EntryForm = () => {
 };
 const PatientV = () => {
   const [patient, setPatient] = useState<Patient>({} as Patient);
+  console.log('patient is ',patient)
 
   const [modalOpen, setOpenModal] = useState<boolean>(false);
   const [error, setError] = useState<string>();
@@ -80,14 +83,36 @@ const PatientV = () => {
     setOpenModal(false);
     setError(undefined);
   };
-  const submitNewEntry=async(values:EntryFormValues)=>{
-
-  }
+  const submitNewEntry = async (values: EntryFormValues) => {
+    try {
+      const entry=await create(patient.id,values);
+    } catch (error: unknown) {
+      // type narrowing because we dont know
+      if (axios.isAxiosError(error)) {
+        if (
+          error?.response?.data &&
+          typeof error?.response?.data === "string"
+        ) {
+          const message = error.response.data.replace(
+            "Something went wrong. Error: ",
+            ""
+          );
+          console.error(message);
+          setError(message);
+        } else {
+          setError("Unrecognized axios error");
+        }
+      } else {
+        console.error("unknown Error", error);
+        setError("Unknown error");
+      }
+    }
+  };
   const { id } = useParams();
   const fetchData = async (id: string) => {
     try {
       const data = await patientService.getById(id);
-      console.log(data);
+      
       setPatient(data);
     } catch (error) {
       console.log(error);
