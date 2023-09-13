@@ -31,20 +31,12 @@ export interface HealthCheckEntry extends BaseEntry {
 
 export interface HospitalEntry extends BaseEntry {
     type: "Hospital";
-    // discharge: {
-    //     date: string;
-    //     criteria: string;
-    // }
     discharge:Discharge;
 
 }
 export interface OccupationalHealthcareEntry extends BaseEntry {
     type: "OccupationalHealthcare";
     employerName: string;
-    // sickLeave?: {
-    //     startDate: string;
-    //     endDate: string;
-    // }
     sickLeave?:SickLeave;
 }
 

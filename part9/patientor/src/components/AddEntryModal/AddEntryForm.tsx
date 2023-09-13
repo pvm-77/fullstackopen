@@ -20,24 +20,20 @@ interface AddEntryFormProps {
   onSubmit: (values: EntryFormValues) => void;
 }
 const AddEntryForm = ({ onCancel, onSubmit }: AddEntryFormProps) => {
-  // const [description, setDescription] = useState("");
   const description = useField("text");
-  console.log("description is", description);
-
   const [selectedDate, setSelectedDate] = useState("");
+  const specialist = useField("text");
+  const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
+  const diagnosisCode = useField("text");
+  const healthCheckRating = useField("number");
+
+  const dischargeCriteria = useField("text");
+  const employerName = useField("text");
+  const [selectedDischargeDate, setSelectedDischargeDate] = useState("");
   const [selectedStartDate, setSelectedStartDate] = useState("");
   const [selectedEndDate, setSelectedEndDate] = useState("");
-  const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
-  const [diagnosisCode, setDiagnosisCode] = useState("");
-  const [employerName, setEmployerName] = useState("");
-  const dischargeCriteria=useField('text');
-  const [selectedDischargeDate, setSelectedDischargeDate] = useState("");
-  const specialist = useField("text");
   const [selectedEntryType, setSelectedEntryType] = useState("");
 
-  const handleDiagnosisCode = (event: any) => {
-    setDiagnosisCode(event.target.value);
-  };
   const handleDiagnosisCodeDelete = (code: string) => {
     setDiagnosisCodes(
       diagnosisCodes.filter(
@@ -49,14 +45,66 @@ const AddEntryForm = ({ onCancel, onSubmit }: AddEntryFormProps) => {
   const handleInputKeyPress = (event: any) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      setDiagnosisCodes([...diagnosisCodes, diagnosisCode.trim()]);
-      setDiagnosisCode("");
+      setDiagnosisCodes([...diagnosisCodes, diagnosisCode.value.trim()]);
+      diagnosisCode.reset();
     }
   };
+  const addEntry = (e: SyntheticEvent) => {
+    e.preventDefault();
+    const baseEntry = {
+      date: selectedDate,
+      description: description.value,
+      specialist: specialist.value,
+      diagnosisCodes: diagnosisCodes,
+    };
+    console.log("date", baseEntry);
 
+    switch (selectedEntryType) {
+      case "HealthCheck":
+        onSubmit({
+          ...baseEntry,
+          type: "HealthCheck",
+          healthCheckRating: Number(healthCheckRating.value),
+        });
+        break;
+      case "Hospital":
+        onSubmit({
+          ...baseEntry,
+          type: "Hospital",
+          discharge: {
+            date: selectedDischargeDate,
+            criteria: dischargeCriteria.value,
+          },
+        });
+
+        break;
+      case "OccupationalHealthcare":
+        onSubmit({
+          ...baseEntry,
+          type: "OccupationalHealthcare",
+          employerName: employerName.value,
+          sickLeave: {
+            startDate: selectedStartDate,
+            endDate: selectedEndDate,
+          },
+        });
+
+        break;
+
+      default:
+        break;
+    }
+  };
   return (
     <div>
-      <form>
+      <form onSubmit={addEntry}>
+        <InputLabel>date</InputLabel>
+        <TextField
+          fullWidth
+          type="date"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+        />
         <TextField
           type={description.type}
           value={description.value}
@@ -66,24 +114,23 @@ const AddEntryForm = ({ onCancel, onSubmit }: AddEntryFormProps) => {
           label="description"
           variant="outlined"
         />
-
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker value={selectedDate} label="date" />
-        </LocalizationProvider>
         <TextField
-          value={specialist}
+          type={specialist.type}
+          value={specialist.value}
+          onChange={specialist.onChange}
           margin="normal"
           fullWidth
           label="specialist"
           variant="outlined"
         />
         <TextField
+          value={diagnosisCode.value}
+          onChange={diagnosisCode.onChange}
+          type={diagnosisCode.type}
           margin="normal"
           fullWidth
           label="diagnosisCode"
           variant="outlined"
-          value={diagnosisCode}
-          onChange={handleDiagnosisCode}
           onKeyDown={handleInputKeyPress}
           InputProps={{
             startAdornment: diagnosisCodes.map((code, index) => (
@@ -116,12 +163,13 @@ const AddEntryForm = ({ onCancel, onSubmit }: AddEntryFormProps) => {
 
         {selectedEntryType === "Hospital" && (
           <>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                value={selectedDischargeDate}
-                label="discharge date"
-              />
-            </LocalizationProvider>
+            <InputLabel>discharge date</InputLabel>
+            <TextField
+              type="date"
+              fullWidth
+              value={selectedDischargeDate}
+              onChange={(e) => setSelectedDischargeDate(e.target.value)}
+            />
             <TextField
               value={dischargeCriteria.value}
               type={dischargeCriteria.type}
@@ -134,28 +182,44 @@ const AddEntryForm = ({ onCancel, onSubmit }: AddEntryFormProps) => {
           </>
         )}
         {selectedEntryType === "HealthCheck" && (
-          <TextField
-            margin="normal"
-            fullWidth
-            label="health check rating"
-            variant="outlined"
-          />
+          <>
+            <InputLabel>Rating between 0 to 3</InputLabel>
+            <TextField
+              type={healthCheckRating.type}
+              margin="normal"
+              fullWidth
+              label="health check rating"
+              variant="outlined"
+              value={healthCheckRating.value}
+              onChange={healthCheckRating.onChange}
+            />
+          </>
         )}
         {selectedEntryType === "OccupationalHealthcare" && (
           <>
             <TextField
-              value={employerName}
+              value={employerName.value}
+              onChange={employerName.onChange}
               margin="normal"
               fullWidth
               label="employer name"
               variant="outlined"
             />
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker value={selectedStartDate} label="discharge date" />
-            </LocalizationProvider>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker value={selectedEndDate} label="end date" />
-            </LocalizationProvider>
+            <InputLabel>Start date</InputLabel>
+            <TextField
+              fullWidth
+              type="date"
+              value={selectedStartDate}
+              onChange={(e) => setSelectedStartDate(e.target.value)}
+            />
+            <InputLabel>End date</InputLabel>
+
+            <TextField
+              fullWidth
+              type="date"
+              value={selectedEndDate}
+              onChange={(e) => setSelectedEndDate(e.target.value)}
+            />
           </>
         )}
 

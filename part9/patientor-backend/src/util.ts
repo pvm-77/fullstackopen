@@ -10,8 +10,6 @@ const isString = (text: unknown): text is string => {
     return typeof text === 'string' || text instanceof String;
 }
 const isDate = (date: string): boolean => {
-    console.log('isDate');
-    console.log(Boolean(Date.parse(date)));
     return Boolean(Date.parse(date));
 }
 const isNumber = (param: unknown): param is number => {
@@ -78,7 +76,7 @@ const parseSickLeave = (object: unknown): SickLeave => {
 }
 const parseDate = (date: unknown): string => {
     console.log('in date parser')
-    if (!date || !isString(date) || isDate(date)) {
+    if (!date || !isString(date) || !isDate(date)) {
         console.log('in error thorw')
         throw new Error("incorrect or missing date: " + date);
     }
@@ -101,40 +99,31 @@ const parseGender = (gender: unknown): Gender => {
 }
 
 const parseDiagnosisCodes = (object: unknown): Array<Diagnose['code']> => {
+    console.log('in parse diagnosis',object);
     if (!object || typeof object !== 'object' || !('diagnosisCodes' in object)) {
-        // we will just trust the data to be in correct form
         return [] as Array<Diagnose['code']>;
     }
 
-    return object.diagnosisCodes as Array<Diagnose['code']>;
+    return object as Array<Diagnose['code']>;
 };
 
 
 
 export const toNewEntry = (object: unknown): EntryWithoutId => {
-    console.log('to new entry object check');
-
     if (!object || typeof object !== 'object') {
-        console.log('in object format check');
         throw new Error("malformatted entry object.Please provide a valid entry object");
-
     }
 
-
-
     if ('type' in object && 'diagnosisCodes' in object && 'date' in object && 'description' in object && 'specialist' in object) {
-        console.log('in entry object field check');
         const newEntry: NewBaseEntry = {
             description: parseString(object.description),
             date: parseDate(object.date),
             specialist: parseString(object.specialist),
             diagnosisCodes: parseDiagnosisCodes(object.diagnosisCodes),
         }
-        console.log('the new entry su', newEntry);
         switch (object.type) {
             case 'Hospital':
                 if ('discharge' in object) {
-                    console.log('discharge object is', object.discharge);
                     const hospitalEntry: EntryWithoutId = {
                         ...newEntry,
                         type: 'Hospital',

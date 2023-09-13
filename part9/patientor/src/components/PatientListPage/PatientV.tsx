@@ -84,8 +84,11 @@ const PatientV = () => {
     setError(undefined);
   };
   const submitNewEntry = async (values: EntryFormValues) => {
+    console.log('values are ',values)
     try {
       const entry=await create(patient.id,values);
+
+      
     } catch (error: unknown) {
       // type narrowing because we dont know
       if (axios.isAxiosError(error)) {
