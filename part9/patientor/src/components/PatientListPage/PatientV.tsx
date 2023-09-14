@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import FemaleIcon from "@mui/icons-material/Female";
-import { Box, TextField, Button } from "@mui/material";
+import MaleIcon from "@mui/icons-material/Male";
+import TransgenderIcon from "@mui/icons-material/Transgender";
+import FavoriteSharpIcon from "@mui/icons-material/FavoriteSharp";
+import { Box, TextField, Button, Typography } from "@mui/material";
 import { EntryFormValues, Patient } from "../../types";
 import patientService from "../../services/patients";
 import Container from "@mui/material/Container";
@@ -10,7 +13,16 @@ import axios from "axios";
 
 import AddEntryModal from "../AddEntryModal";
 import { create } from "../../services/entry";
+import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 
+/**
+ * Helper function for exhaustive type checking
+ */
+const assertNever = (value: never): never => {
+  throw new Error(
+    `Unhandled discriminated union member: ${JSON.stringify(value)}`
+  );
+};
 const EntryDetails = ({ entry }: { entry: Entry }) => {
   switch (entry.type) {
     case "Hospital":
@@ -21,40 +33,76 @@ const EntryDetails = ({ entry }: { entry: Entry }) => {
       return <OccupationalHealthcareEntry entry={entry} />;
 
     default:
-      return <p>no such</p>;
+      return assertNever(entry);
   }
 };
-
 const HealthCheckEntry = ({ entry }: { entry: Entry }) => {
-  console.log(entry);
-  return (
-    <div>
-      <p>{entry.date}</p>
-      <p>{entry.description}</p>
-      <p>diagnose by {entry.specialist}</p>
-    </div>
-  );
+  if ("healthCheckRating" in entry) {
+    return (
+      <Box
+        sx={{ borderRadius: 2, mt: 2, mb: 2, p: 2, border: "1px solid black" }}
+      >
+        <Box display="flex">
+          <Typography>{entry.date}</Typography>
+          <MedicalServicesIcon />
+        </Box>
+        <Typography> {entry.description}</Typography>
+       
+        {entry.healthCheckRating === 0 ? (
+          <FavoriteSharpIcon sx={{ color: "yellow" }} />
+        ) : (
+          <FavoriteSharpIcon />
+        )}
+        <Typography></Typography>
+        <Typography>diagnose by {entry.specialist}</Typography>
+      </Box>
+    );
+  }
+  return null;
 };
+
 const HospitalEntry = ({ entry }: { entry: Entry }) => {
-  console.log("entry is", entry);
-  return (
-    <div>
-      <p>{entry.date}</p>
-      <p>{entry.description}</p>
-      <p>diagnose by {entry.specialist}</p>
-    </div>
-  );
+  if ("discharge" in entry) {
+    return (
+      <Box
+        sx={{ borderRadius: 2, mt: 2, mb: 2, p: 2, border: "1px solid black" }}
+      >
+        <Box display="flex">
+          <Typography>{entry.date}</Typography>
+          <MedicalServicesIcon />
+        </Box>
+        <Typography> {entry.description}</Typography>
+
+        <p>discharge date</p>
+        <p>discharge criteria</p>
+        <Typography>diagnose by {entry.specialist}</Typography>
+      </Box>
+    );
+  }
+  return null;
 };
 const OccupationalHealthcareEntry = ({ entry }: { entry: Entry }) => {
-  console.log(entry);
+  // type assertion
+  if ("sickLeave" in entry) {
+    return (
+      <Box
+        sx={{ borderRadius: 2, mt: 2, mb: 2, p: 2, border: "1px solid black" }}
+      >
+        <Box display="flex">
+          <Typography>{entry.date}</Typography>
+          <MedicalServicesIcon />
+        </Box>
 
-  return (
-    <div>
-      <p>{entry.date}</p>
-      <p>{entry.description}</p>
-      <p>diagnose by {entry.specialist}</p>
-    </div>
-  );
+        <Typography> {entry.description}</Typography>
+        <p>employer name</p>
+        <p>sickleave </p>
+        <p>start dat</p>
+        <p>end dat</p>
+        <Typography>diagnose by {entry.specialist}</Typography>
+      </Box>
+    );
+  }
+  return null;
 };
 
 const EntryForm = () => {
@@ -71,8 +119,6 @@ const EntryForm = () => {
 };
 const PatientV = () => {
   const [patient, setPatient] = useState<Patient>({} as Patient);
-  console.log('patient is ',patient)
-
   const [modalOpen, setOpenModal] = useState<boolean>(false);
   const [error, setError] = useState<string>();
   // handlers for modal
@@ -84,11 +130,12 @@ const PatientV = () => {
     setError(undefined);
   };
   const submitNewEntry = async (values: EntryFormValues) => {
-    console.log('values are ',values)
+    console.log("values are ", values);
     try {
-      const entry=await create(patient.id,values);
-
-      
+      const entry = await create(patient.id, values);
+      const data = { ...patient, entries: patient.entries.concat(entry) };
+      setPatient(data);
+      setOpenModal(false);
     } catch (error: unknown) {
       // type narrowing because we dont know
       if (axios.isAxiosError(error)) {
@@ -115,7 +162,7 @@ const PatientV = () => {
   const fetchData = async (id: string) => {
     try {
       const data = await patientService.getById(id);
-      
+
       setPatient(data);
     } catch (error) {
       console.log(error);
@@ -125,34 +172,36 @@ const PatientV = () => {
     void fetchData(String(id));
   }, [id]);
   return (
-    <div>
-      <p>
-        <b>
-          <h2>{patient.name}</h2>{" "}
-        </b>{" "}
+    <>
+      <Box display="flex">
+        <Typography mr={1} variant="h4" component="h4">
+          {patient.name}
+        </Typography>
         <sub>
-          <FemaleIcon />
+          {patient.gender === "male" && <MaleIcon />}
+          {patient.gender === "female" && <FemaleIcon />}
         </sub>
-      </p>
+      </Box>
+      <Typography mt={4}> ssh:{patient.ssn}</Typography>
+      <Typography>occupation:{patient.occupation}</Typography>
 
-      <p>ssh:{patient.ssn}</p>
-      <p>occupation:{patient.occupation}</p>
-
-      <div>
-        <h2>entries</h2>
+      <Box>
+        <Typography fontWeight={900} variant="h5" component="h5">
+          entries
+        </Typography>
         {patient.entries &&
           patient.entries.map((entry) => <EntryDetails entry={entry} />)}
-      </div>
-      <AddEntryModal
-        modalOpen={modalOpen}
-        onSubmit={submitNewEntry}
-        error={error}
-        onClose={closeModal}
-      />
-      <Button variant="contained" onClick={() => openModal()}>
-        Add New Entry
-      </Button>
-    </div>
+        <AddEntryModal
+          modalOpen={modalOpen}
+          onSubmit={submitNewEntry}
+          error={error}
+          onClose={closeModal}
+        />
+        <Button variant="contained" onClick={() => openModal()}>
+          Add New Entry
+        </Button>
+      </Box>
+    </>
   );
 };
 

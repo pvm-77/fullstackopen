@@ -8,5 +8,17 @@ Content-Type: application/json
   "specialist": "MD House",
   "diagnosisCodes": ["S62.5"],
   "description":"Healing time appr. 2 weeks. patient doesn't remember how he got the injury.",
-  "healthCheckRating":2
+  "discharge":{
+    "date":"2015-01-28",
+    "criteria":"get fast recovery"
+  }
 }
+
+# {
+#   "date":"2015-01-02",
+#   "type":"HealthCheck",
+#   "specialist":"MD House",
+#   "diagnosisCodes":["S62.5","TY6.78"],
+#   "description":"Healing time appr. 2 weeks. patient doesn't remember how he got the injury.",
+#   "healthCheckRating":2
+# }

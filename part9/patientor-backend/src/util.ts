@@ -75,9 +75,7 @@ const parseSickLeave = (object: unknown): SickLeave => {
 
 }
 const parseDate = (date: unknown): string => {
-    console.log('in date parser')
     if (!date || !isString(date) || !isDate(date)) {
-        console.log('in error thorw')
         throw new Error("incorrect or missing date: " + date);
     }
     return date;
@@ -100,11 +98,13 @@ const parseGender = (gender: unknown): Gender => {
 
 const parseDiagnosisCodes = (object: unknown): Array<Diagnose['code']> => {
     console.log('in parse diagnosis',object);
-    if (!object || typeof object !== 'object' || !('diagnosisCodes' in object)) {
+    if (!object || typeof object !== 'object' || !('diagnosisCodes' in object) ) {
+        console.log('in empty of diagnosis codes')
+        console.log('type of diagnosis obj',typeof(object))
         return [] as Array<Diagnose['code']>;
     }
 
-    return object as Array<Diagnose['code']>;
+    return object.diagnosisCodes as Array<Diagnose['code']>;
 };
 
 
@@ -119,7 +119,7 @@ export const toNewEntry = (object: unknown): EntryWithoutId => {
             description: parseString(object.description),
             date: parseDate(object.date),
             specialist: parseString(object.specialist),
-            diagnosisCodes: parseDiagnosisCodes(object.diagnosisCodes),
+            diagnosisCodes: parseDiagnosisCodes(object),
         }
         switch (object.type) {
             case 'Hospital':
@@ -148,11 +148,11 @@ export const toNewEntry = (object: unknown): EntryWithoutId => {
 
             case 'OccupationalHealthcare': {
 
-                if ('emploayerName' in object && 'sickLeave' in object) {
+                if ('employerName' in object && 'sickLeave' in object) {
                     const occupationalHealthcareEntry: EntryWithoutId = {
                         ...newEntry,
                         type: 'OccupationalHealthcare',
-                        employerName: parseString(object.emploayerName),
+                        employerName: parseString(object.employerName),
                         sickLeave: parseSickLeave(object.sickLeave)
                     };
                     return occupationalHealthcareEntry;

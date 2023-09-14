@@ -1,8 +1,6 @@
 import express from 'express';
 import { addEntry, findById, getPatientsWithoutSSN } from '../services/patientService';
 import { addPatient } from '../services/patientService';
-// import toNewPatient from '../util';
-// import toNewEntry from '../util';
 import { toNewEntry } from '../util';
 import { toNewPatient } from '../util';
 const patientRouter = express.Router();
@@ -41,7 +39,6 @@ patientRouter.post('/:id/entries', (req, res) => {
         console.log('data from client',req.body);
 
         const patient = findById(req.params.id);
-
         if (!patient) {
             return res.status(404).json({ error: 'Patient not found' });
         }
