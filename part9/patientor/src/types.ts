@@ -32,6 +32,7 @@ export enum HealthCheckRating {
   "HighRisk" = 2,
   "CriticalRisk" = 3
 }
+
 interface BaseEntry {
   id: string;
   description: string;

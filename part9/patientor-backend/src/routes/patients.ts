@@ -1,5 +1,5 @@
 import express from 'express';
-import { addEntry, findById, getPatientsWithoutSSN } from '../services/patientService';
+import { addEntry, fetchAllPatients, findById} from '../services/patientService';
 import { addPatient } from '../services/patientService';
 import { toNewEntry } from '../util';
 import { toNewPatient } from '../util';
@@ -14,7 +14,9 @@ patientRouter.get('/:id', (req, res) => {
     }
 })
 patientRouter.get('/', (_req, res) => {
-    res.send(getPatientsWithoutSSN());
+    const getAllPatients=fetchAllPatients();
+    console.log('a',getAllPatients);
+    res.send(getAllPatients);
 
 })
 

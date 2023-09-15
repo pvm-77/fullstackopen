@@ -14,6 +14,7 @@ import axios from "axios";
 import AddEntryModal from "../AddEntryModal";
 import { create } from "../../services/entry";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
+import { HealthCheckRating } from "../../types";
 
 /**
  * Helper function for exhaustive type checking
@@ -23,6 +24,25 @@ const assertNever = (value: never): never => {
     `Unhandled discriminated union member: ${JSON.stringify(value)}`
   );
 };
+
+const HealthIcon = ({health}:{health:HealthCheckRating}) => {
+  switch (health) {
+    case 0:
+      return <FavoriteSharpIcon sx={{color:"red"}} />;
+    case 1:
+      return <FavoriteSharpIcon sx={{color:"blue"}}/>;
+    case 2:
+      return <FavoriteSharpIcon sx={{color:"yellow"}}/>;
+    case 3:
+      return <FavoriteSharpIcon sx={{color:"green"}}/>;
+    default:
+      return null;
+  }
+};
+
+
+
+
 const EntryDetails = ({ entry }: { entry: Entry }) => {
   switch (entry.type) {
     case "Hospital":
@@ -36,6 +56,9 @@ const EntryDetails = ({ entry }: { entry: Entry }) => {
       return assertNever(entry);
   }
 };
+
+
+
 const HealthCheckEntry = ({ entry }: { entry: Entry }) => {
   if ("healthCheckRating" in entry) {
     return (
@@ -47,13 +70,9 @@ const HealthCheckEntry = ({ entry }: { entry: Entry }) => {
           <MedicalServicesIcon />
         </Box>
         <Typography> {entry.description}</Typography>
+
        
-        {entry.healthCheckRating === 0 ? (
-          <FavoriteSharpIcon sx={{ color: "yellow" }} />
-        ) : (
-          <FavoriteSharpIcon />
-        )}
-        <Typography></Typography>
+        <HealthIcon health={entry.healthCheckRating} />
         <Typography>diagnose by {entry.specialist}</Typography>
       </Box>
     );
@@ -73,8 +92,8 @@ const HospitalEntry = ({ entry }: { entry: Entry }) => {
         </Box>
         <Typography> {entry.description}</Typography>
 
-        <p>discharge date</p>
-        <p>discharge criteria</p>
+        <p>discharge date:{entry.discharge.date}</p>
+        <p>discharge criteria:{entry.discharge.criteria}</p>
         <Typography>diagnose by {entry.specialist}</Typography>
       </Box>
     );
@@ -94,10 +113,10 @@ const OccupationalHealthcareEntry = ({ entry }: { entry: Entry }) => {
         </Box>
 
         <Typography> {entry.description}</Typography>
-        <p>employer name</p>
+        <p>employer name  {entry.employerName}</p>
         <p>sickleave </p>
-        <p>start dat</p>
-        <p>end dat</p>
+        <p>start dat {entry.sickLeave?.startDate}</p>
+        <p>end dat  {entry.sickLeave?.endDate}</p>
         <Typography>diagnose by {entry.specialist}</Typography>
       </Box>
     );
@@ -105,32 +124,22 @@ const OccupationalHealthcareEntry = ({ entry }: { entry: Entry }) => {
   return null;
 };
 
-const EntryForm = () => {
-  return (
-    <Container fixed>
-      <form>
-        <TextField label="description" variant="standard" />
-        <TextField label="date" variant="standard" />
-        <TextField label="specialist" variant="standard" />
-        <TextField label="healthcheck rating" variant="standard" />
-      </form>
-    </Container>
-  );
-};
+
 const PatientV = () => {
   const [patient, setPatient] = useState<Patient>({} as Patient);
   const [modalOpen, setOpenModal] = useState<boolean>(false);
   const [error, setError] = useState<string>();
-  // handlers for modal
+
   const openModal = (): void => {
     setOpenModal(true);
   };
+
   const closeModal = (): void => {
     setOpenModal(false);
     setError(undefined);
   };
+
   const submitNewEntry = async (values: EntryFormValues) => {
-    console.log("values are ", values);
     try {
       const entry = await create(patient.id, values);
       const data = { ...patient, entries: patient.entries.concat(entry) };
@@ -158,6 +167,8 @@ const PatientV = () => {
       }
     }
   };
+
+
   const { id } = useParams();
   const fetchData = async (id: string) => {
     try {
@@ -168,9 +179,13 @@ const PatientV = () => {
       console.log(error);
     }
   };
+
+
   useEffect(() => {
     void fetchData(String(id));
   }, [id]);
+
+
   return (
     <>
       <Box display="flex">
