@@ -1,5 +1,5 @@
 import { SyntheticEvent, useState } from "react";
-import { EntryFormValues } from "../../types";
+import { Diagnosis, EntryFormValues } from "../../types";
 import {
   Grid,
   TextField,
@@ -9,22 +9,31 @@ import {
   InputLabel,
   FormControl,
   Chip,
+  OutlinedInput,
+  Box,
+  Menu,
+  SelectChangeEvent,
 } from "@mui/material";
 
-import { DatePicker } from "@mui/x-date-pickers";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useField } from "../../hooks";
 interface AddEntryFormProps {
   onCancel: () => void;
   onSubmit: (values: EntryFormValues) => void;
+  diagnos?: Diagnosis[];
 }
-const AddEntryForm = ({ onCancel, onSubmit }: AddEntryFormProps) => {
+const AddEntryForm = ({ onCancel, onSubmit, diagnos }: AddEntryFormProps) => {
+  console.log("diagnos in entry form", diagnos);
   const description = useField("text");
   const [selectedDate, setSelectedDate] = useState("");
   const specialist = useField("text");
   const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
-  const diagnosisCode = useField("text");
+
+  const handledcodeChange = (e: SelectChangeEvent<typeof diagnosisCodes>) => {
+    const {
+      target: { value },
+    } = e;
+    setDiagnosisCodes(typeof value === "string" ? value.split(",") : value);
+  };
   const healthCheckRating = useField("number");
 
   const dischargeCriteria = useField("text");
@@ -33,22 +42,6 @@ const AddEntryForm = ({ onCancel, onSubmit }: AddEntryFormProps) => {
   const [selectedStartDate, setSelectedStartDate] = useState("");
   const [selectedEndDate, setSelectedEndDate] = useState("");
   const [selectedEntryType, setSelectedEntryType] = useState("");
-
-  const handleDiagnosisCodeDelete = (code: string) => {
-    setDiagnosisCodes(
-      diagnosisCodes.filter(
-        (currentDiagnosisCode) => currentDiagnosisCode !== code
-      )
-    );
-    console.log(code);
-  };
-  const handleInputKeyPress = (event: any) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      setDiagnosisCodes([...diagnosisCodes, diagnosisCode.value.trim()]);
-      diagnosisCode.reset();
-    }
-  };
   const addEntry = (e: SyntheticEvent) => {
     e.preventDefault();
     const baseEntry = {
@@ -57,8 +50,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: AddEntryFormProps) => {
       specialist: specialist.value,
       diagnosisCodes: diagnosisCodes,
     };
-    console.log("date", baseEntry);
-
+    console.log('base entry is',baseEntry)
     switch (selectedEntryType) {
       case "HealthCheck":
         onSubmit({
@@ -123,26 +115,39 @@ const AddEntryForm = ({ onCancel, onSubmit }: AddEntryFormProps) => {
           label="specialist"
           variant="outlined"
         />
-        <TextField
-          value={diagnosisCode.value}
-          onChange={diagnosisCode.onChange}
-          type={diagnosisCode.type}
-          margin="normal"
-          fullWidth
-          label="diagnosisCode"
-          variant="outlined"
-          onKeyDown={handleInputKeyPress}
-          InputProps={{
-            startAdornment: diagnosisCodes.map((code, index) => (
-              <Chip
-                key={index}
-                label={code}
-                onDelete={() => handleDiagnosisCodeDelete(code)}
-                style={{ margin: "2px" }}
+
+        <FormControl fullWidth  margin="normal">
+          <InputLabel id="demo-multiple-diagnosiscode-label">
+            diagnosis code
+          </InputLabel>
+          <Select
+            labelId="demo-multiple-diagnosiscode-label"
+            id="demo-multiple-diagnosiscode"
+            multiple
+            value={diagnosisCodes}
+            onChange={handledcodeChange}
+            input={
+              <OutlinedInput
+                id="select-multiple-diagnosiscode"
+                label="diagnosis code"
               />
-            )),
-          }}
-        />
+            }
+            renderValue={(selected) => (
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                {selected.map((value) => (
+                  <Chip key={value} label={value} />
+                ))}
+              </Box>
+            )}
+            // MenuProps={MenuProps}
+          >
+            {diagnos?.map((d) => (
+              <MenuItem key={d.code} value={d.code}>
+                {d.code}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">

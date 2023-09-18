@@ -15,7 +15,6 @@ patientRouter.get('/:id', (req, res) => {
 })
 patientRouter.get('/', (_req, res) => {
     const getAllPatients=fetchAllPatients();
-    console.log('a',getAllPatients);
     res.send(getAllPatients);
 
 })
@@ -38,7 +37,6 @@ patientRouter.post('/', (req, res) => {
 // entry for patient 
 patientRouter.post('/:id/entries', (req, res) => {
     try {
-        console.log('data from client',req.body);
 
         const patient = findById(req.params.id);
         if (!patient) {
@@ -46,7 +44,6 @@ patientRouter.post('/:id/entries', (req, res) => {
         }
 
         const newEntry = toNewEntry(req.body);
-        console.log('new entry in controller',newEntry)
         if (!newEntry) {
             return res.status(404).json({ error: 'invalid entry ' });
         }

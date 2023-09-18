@@ -12,9 +12,10 @@ import MaleIcon from "@mui/icons-material/Male";
 import FavoriteSharpIcon from "@mui/icons-material/FavoriteSharp";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { assertNever } from "../../utils";
-import { Container, Button, Box, Typography } from "@mui/material";
+import { Button, Box, Typography } from "@mui/material";
+import { create } from "../../services/entry";
 
 import AddEntryModal from "../AddEntryModal";
 import axios from "axios";
@@ -41,9 +42,9 @@ const HealthCheckEntry = ({ entry }: { entry: Entry }) => {
       >
         <Box display="flex">
           <Typography>{entry.date}</Typography>
+          <Typography> {entry.description}</Typography>
           <MedicalServicesIcon />
         </Box>
-        <Typography> {entry.description}</Typography>
 
         <HealthIcon health={entry.healthCheckRating} />
         <Typography>diagnose by {entry.specialist}</Typography>
@@ -61,16 +62,13 @@ const HospitalEntry = ({ entry }: { entry: Entry }) => {
       >
         <Box display="flex">
           <Typography>{entry.date}</Typography>
+          <Typography> {entry.description}</Typography>
           <MedicalServicesIcon />
         </Box>
-        <Typography> {entry.description}</Typography>
-        {entry.diagnosisCodes?.map((d) => {
-          console.log(d);
-          return <li key={d}>{d}</li>;
-        })}
-        <p>discharge date:{entry.discharge.date}</p>
-        <p>discharge criteria:{entry.discharge.criteria}</p>
         <Typography>diagnose by {entry.specialist}</Typography>
+        <Typography>
+          discharged {entry.discharge.date}:{entry.discharge.criteria}
+        </Typography>
       </Box>
     );
   }
@@ -85,15 +83,14 @@ const OccupationalHealthcareEntry = ({ entry }: { entry: Entry }) => {
       >
         <Box display="flex">
           <Typography>{entry.date}</Typography>
+          <Typography> {entry.description}</Typography>
           <MedicalServicesIcon />
         </Box>
-
-        <Typography> {entry.description}</Typography>
+        <Typography>diagnose by {entry.specialist}</Typography>
         <p>employer name {entry.employerName}</p>
         <p>sickleave </p>
         <p>start date {entry.sickLeave?.startDate}</p>
         <p>end date {entry.sickLeave?.endDate}</p>
-        <Typography>diagnose by {entry.specialist}</Typography>
       </Box>
     );
   }
@@ -101,8 +98,6 @@ const OccupationalHealthcareEntry = ({ entry }: { entry: Entry }) => {
 };
 
 const EntryDetails = ({ entry }: { entry: Entry }) => {
-  console.log(entry.diagnosisCodes);
-
   switch (entry.type) {
     case "Hospital":
       return <HospitalEntry entry={entry} />;
@@ -116,11 +111,16 @@ const EntryDetails = ({ entry }: { entry: Entry }) => {
 };
 interface PatientDetailsPageProps {
   patient: Patient | null | undefined;
+  setPatients: React.Dispatch<React.SetStateAction<Patient[]>>;
   diagnos: Diagnosis[];
 }
-const PatientDetailsPage = ({ patient, diagnos }: PatientDetailsPageProps) => {
-  console.log(patient);
+const PatientDetailsPage = ({
+  patient,
+  setPatients,
+  diagnos,
+}: PatientDetailsPageProps) => {
   const [modalOpen, setOpenModal] = useState<boolean>(false);
+
   const [error, setError] = useState<string>();
 
   const openModal = (): void => {
@@ -134,8 +134,22 @@ const PatientDetailsPage = ({ patient, diagnos }: PatientDetailsPageProps) => {
 
   const submitNewEntry = async (values: EntryWithoutId) => {
     try {
-      // const entry = await create(patient.id, values);
-      // const data = { ...patient, entries: patient.entries.concat(entry) };
+      if (patient) {
+        const newAddedEntry = await create(patient.id, values);
+        setPatients((prevPatients) => {
+          const updatedPatients = prevPatients.map((prevPatient) => {
+            if (prevPatient.id === patient.id) {
+              return {
+                ...prevPatient,
+                entries: [...prevPatient.entries, newAddedEntry],
+              };
+            }
+            return prevPatient;
+          });
+          
+          return updatedPatients;
+        });
+      }
 
       setOpenModal(false);
     } catch (error: unknown) {
@@ -161,7 +175,6 @@ const PatientDetailsPage = ({ patient, diagnos }: PatientDetailsPageProps) => {
     }
   };
 
-  console.log(patient);
   return (
     <>
       <Box display="flex">
@@ -180,19 +193,7 @@ const PatientDetailsPage = ({ patient, diagnos }: PatientDetailsPageProps) => {
         <Typography fontWeight={900} variant="h5" component="h5">
           entries
         </Typography>
-        {patient?.entries.map((entry) => {
-          return (
-            <>
-              <p>{entry.description}</p>
-             {
-              entry.diagnosisCodes?.map(d=>{
-                const di=diagnos.find(cDiagnos=>cDiagnos.code===d);
 
-              })
-             }
-            </>
-          );
-        })}
         {patient?.entries &&
           patient?.entries.map((entry) => <EntryDetails entry={entry} />)}
         <AddEntryModal
@@ -200,6 +201,7 @@ const PatientDetailsPage = ({ patient, diagnos }: PatientDetailsPageProps) => {
           onSubmit={submitNewEntry}
           error={error}
           onClose={closeModal}
+          diagnos={diagnos}
         />
         <Button variant="contained" onClick={() => openModal()}>
           Add New Entry

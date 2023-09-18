@@ -1,7 +1,4 @@
 import { NewPatient, Gender, EntryWithoutId, Diagnose, NewBaseEntry, HealthCheckRating, Discharge, SickLeave } from "./types";
-
-// type guards
-
 const isGender = (str: string): str is Gender => {
     return Object.values(Gender).map(g => g.toString()).includes(str);
 }
@@ -15,23 +12,11 @@ const isDate = (date: string): boolean => {
 const isNumber = (param: unknown): param is number => {
     return typeof param === 'number' || param instanceof Number;
 }
-// const isDOB = (dob: string): boolean => {
-//     return Boolean(Date.parse(dob));
-// }
+
 const isHealthCheckRating = (param: number): param is HealthCheckRating => {
     return Object.values(HealthCheckRating).includes(param);
 };
 
-// parser functions
-
-// const parseDOB = (dateOfBirth: unknown): string => {
-
-
-//     if (!dateOfBirth || !isString(dateOfBirth) || !isDOB(dateOfBirth)) {
-//         throw new Error('incorrect or missing dob :' + dateOfBirth);
-//     }
-//     return dateOfBirth;
-// }
 
 const parseHealthCheckRating = (healthCheckRating: unknown): HealthCheckRating => {
     if (!healthCheckRating || !isNumber(healthCheckRating) || !isHealthCheckRating(healthCheckRating)) {
@@ -54,7 +39,6 @@ const parseDischarge = (dischargeObject: unknown): Discharge => {
     }
 
     throw new Error("incorrect or missing discharge object fields");
-
 
 }
 

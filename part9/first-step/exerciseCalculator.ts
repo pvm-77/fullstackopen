@@ -50,14 +50,12 @@ export const calculateExercises = (dailyExercises: number[], target: number): Re
 }
 try {
     const {target,dailyExercises}=parseArguments(process.argv);
-     console.log(calculateExercises(dailyExercises,target))
+     console.log(calculateExercises(dailyExercises,target));
 
 } catch (error: unknown) {
     let ErrorMessage = ' something bad happened';
     if (error instanceof Error) {
         ErrorMessage += ' Error: ' + error.message;
-
-
     }
     console.log(ErrorMessage);
 };
